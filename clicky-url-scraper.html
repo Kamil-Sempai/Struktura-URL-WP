@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WordPress URL Scraper – Sempai SEO</title>
+<style>
+  :root {
+    --sempai-dark:   #151b3a;
+    --sempai-green:  #3da546;
+    --sempai-green2: #41ad49;
+    --sempai-muted:  #607086;
+    --sempai-border: #cfd4db;
+    --sempai-white:  #ffffff;
+    --font-main: Arial, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-main);
+    background: #f4f6f8;
+    color: var(--sempai-dark);
+    min-height: 100vh;
+    padding: 32px 16px;
+  }
+  .wrapper { max-width: 860px; margin: 0 auto; }
+
+  header {
+    background: var(--sempai-dark);
+    color: white;
+    border-radius: 8px 8px 0 0;
+    padding: 24px 28px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .logo-dot {
+    width: 36px; height: 36px;
+    background: var(--sempai-green);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 18px; color: white; flex-shrink: 0;
+  }
+  header h1 { font-size: 20px; font-weight: 700; }
+  header p  { font-size: 13px; color: #9ba8bf; margin-top: 2px; }
+
+  .body-card {
+    background: white;
+    border: 1px solid var(--sempai-border);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    padding: 28px;
+  }
+
+  .field-row {
+    display: flex; gap: 10px; margin-bottom: 20px; align-items: center; flex-wrap: wrap;
+  }
+  .field-row input {
+    flex: 1; min-width: 200px;
+    border: 1px solid var(--sempai-border);
+    border-radius: 4px;
+    padding: 10px 14px;
+    font-family: var(--font-main);
+    font-size: 14px;
+    color: var(--sempai-dark);
+    outline: none;
+  }
+  .field-row input:focus { border-color: var(--sempai-green); }
+
+  .types-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .type-check {
+    display: flex; align-items: center; gap: 8px;
+    border: 1px solid var(--sempai-border);
+    border-radius: 4px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: border-color .15s, background .15s;
+    font-size: 13px;
+    user-select: none;
+  }
+  .type-check:hover { border-color: var(--sempai-green); background: #f0faf0; }
+  .type-check input[type=checkbox] { accent-color: var(--sempai-green); width: 15px; height: 15px; cursor: pointer; }
+  .type-check .badge {
+    margin-left: auto;
+    background: var(--sempai-border);
+    color: var(--sempai-muted);
+    border-radius: 10px;
+    font-size: 11px;
+    padding: 1px 7px;
+  }
+  .type-check.done .badge { background: var(--sempai-green); color: white; }
+
+  .btn {
+    background: var(--sempai-green);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 11px 22px;
+    font-family: var(--font-main);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .15s;
+    white-space: nowrap;
+  }
+  .btn:hover { background: var(--sempai-green2); }
+  .btn:disabled { background: var(--sempai-border); color: var(--sempai-muted); cursor: not-allowed; }
+  .btn-outline {
+    background: white;
+    color: var(--sempai-green);
+    border: 2px solid var(--sempai-green);
+  }
+  .btn-outline:hover { background: #f0faf0; }
+
+  .section-label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--sempai-muted);
+    margin-bottom: 10px;
+  }
+  .divider { border: none; border-top: 1px solid var(--sempai-border); margin: 22px 0; }
+
+  #log-box {
+    background: #f7f9fb;
+    border: 1px solid var(--sempai-border);
+    border-radius: 4px;
+    padding: 14px 16px;
+    font-size: 13px;
+    line-height: 1.7;
+    min-height: 48px;
+    max-height: 220px;
+    overflow-y: auto;
+    display: none;
+    margin-bottom: 16px;
+  }
+  .log-ok   { color: var(--sempai-green); }
+  .log-warn { color: #e07b00; }
+  .log-err  { color: #c0392b; }
+
+  #progress-bar-wrap {
+    background: var(--sempai-border);
+    border-radius: 4px;
+    height: 6px;
+    margin-bottom: 16px;
+    display: none;
+    overflow: hidden;
+  }
+  #progress-bar {
+    height: 6px;
+    background: var(--sempai-green);
+    width: 0%;
+    transition: width .3s;
+  }
+
+  #stats {
+    display: none;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .stat-card {
+    flex: 1; min-width: 110px;
+    border: 1px solid var(--sempai-border);
+    border-radius: 6px;
+    padding: 12px 16px;
+    text-align: center;
+  }
+  .stat-card .num { font-size: 28px; font-weight: 700; color: var(--sempai-dark); }
+  .stat-card .lbl { font-size: 12px; color: var(--sempai-muted); margin-top: 2px; }
+
+  #table-wrap { display: none; overflow-x: auto; margin-bottom: 16px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead tr { background: var(--sempai-dark); color: white; }
+  thead th { padding: 9px 12px; text-align: left; font-weight: 700; white-space: nowrap; }
+  tbody tr:nth-child(even) { background: #f4f6f8; }
+  tbody td { padding: 7px 12px; border-bottom: 1px solid var(--sempai-border); word-break: break-all; }
+  .type-pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    background: var(--sempai-dark);
+    color: white;
+  }
+
+  #actions { display: none; gap: 10px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <header>
+    <div class="logo-dot">S</div>
+    <div>
+      <h1>WordPress URL Scraper</h1>
+      <p>Zbieranie struktury URL przez REST API — Sempai SEO Tools</p>
+    </div>
+  </header>
+
+  <div class="body-card">
+
+    <div class="section-label">Domena serwisu</div>
+    <div class="field-row">
+      <input type="text" id="domain" value="https://clicky.pl" placeholder="https://domena.pl">
+      <button class="btn" id="btn-run" onclick="startScraping()">▶ Zbierz wszystkie URL-e</button>
+    </div>
+
+    <div class="section-label">Typy treści do zebrania</div>
+    <div class="types-grid" id="types-grid">
+      <!-- generowane dynamicznie -->
+    </div>
+
+    <hr class="divider">
+
+    <div id="progress-bar-wrap"><div id="progress-bar"></div></div>
+    <div id="log-box"></div>
+
+    <div id="stats">
+      <div class="stat-card"><div class="num" id="s-total">0</div><div class="lbl">Wszystkich URL</div></div>
+      <div class="stat-card"><div class="num" id="s-pages">0</div><div class="lbl">Stron (pages)</div></div>
+      <div class="stat-card"><div class="num" id="s-products">0</div><div class="lbl">Produktów</div></div>
+      <div class="stat-card"><div class="num" id="s-other">0</div><div class="lbl">Pozostałe CPT</div></div>
+    </div>
+
+    <div id="table-wrap">
+      <table id="results-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>ID</th>
+            <th>Typ</th>
+            <th>Tytuł</th>
+            <th>URL (link)</th>
+            <th>Slug</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="results-body"></tbody>
+      </table>
+    </div>
+
+    <div id="actions" style="display:none; gap:10px; flex-wrap:wrap; margin-top:4px;">
+      <button class="btn" onclick="downloadCSV()">⬇ Pobierz CSV</button>
+      <button class="btn btn-outline" onclick="copyCSV()">📋 Kopiuj CSV</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const TYPES = [
+  { slug: 'posts',       label: 'Wpisy (post)',      endpoint: 'posts' },
+  { slug: 'pages',       label: 'Strony (page)',      endpoint: 'pages' },
+  { slug: 'product',     label: 'Produkty',           endpoint: 'product' },
+  { slug: 'inspiration', label: 'Inspiracje',         endpoint: 'inspiration' },
+  { slug: 'tutorial',    label: 'Poradniki',          endpoint: 'tutorial' },
+  { slug: 'faq',         label: 'FAQ',                endpoint: 'faq' },
+];
+
+let allResults = [];
+
+// Build checkboxes
+const grid = document.getElementById('types-grid');
+TYPES.forEach(t => {
+  const lbl = document.createElement('label');
+  lbl.className = 'type-check';
+  lbl.id = 'chk-' + t.slug;
+  lbl.innerHTML = `<input type="checkbox" value="${t.slug}" checked> ${t.label} <span class="badge" id="badge-${t.slug}">–</span>`;
+  grid.appendChild(lbl);
+});
+
+function log(msg, cls='') {
+  const box = document.getElementById('log-box');
+  box.style.display = 'block';
+  const line = document.createElement('div');
+  if (cls) line.className = cls;
+  line.textContent = msg;
+  box.appendChild(line);
+  box.scrollTop = box.scrollHeight;
+}
+
+function setProgress(pct) {
+  document.getElementById('progress-bar-wrap').style.display = 'block';
+  document.getElementById('progress-bar').style.width = pct + '%';
+}
+
+async function fetchAllPages(base, endpoint) {
+  const items = [];
+  let page = 1;
+  while (true) {
+    const url = `${base}/wp-json/wp/v2/${endpoint}?per_page=100&page=${page}&_fields=id,slug,link,status,title,type`;
+    let resp;
+    try {
+      resp = await fetch(url);
+    } catch(e) {
+      log(`  ✗ Błąd sieci dla ${endpoint} strona ${page}: ${e.message}`, 'log-err');
+      break;
+    }
+    if (resp.status === 400 || resp.status === 404) break;
+    if (!resp.ok) {
+      log(`  ✗ HTTP ${resp.status} dla ${endpoint}`, 'log-err');
+      break;
+    }
+    const total = parseInt(resp.headers.get('X-WP-TotalPages') || '1');
+    let data;
+    try { data = await resp.json(); } catch(e) { break; }
+    if (!data || data.length === 0) break;
+    items.push(...data);
+    log(`  ✓ ${endpoint} – strona ${page}/${total} (${data.length} rekordów)`, 'log-ok');
+    if (page >= total) break;
+    page++;
+  }
+  return items;
+}
+
+async function startScraping() {
+  const domain = document.getElementById('domain').value.replace(/\/$/, '');
+  if (!domain) { alert('Wpisz domenę!'); return; }
+
+  allResults = [];
+  document.getElementById('results-body').innerHTML = '';
+  document.getElementById('log-box').innerHTML = '';
+  document.getElementById('log-box').style.display = 'block';
+  document.getElementById('stats').style.display = 'none';
+  document.getElementById('table-wrap').style.display = 'none';
+  document.getElementById('actions').style.display = 'none';
+  document.getElementById('btn-run').disabled = true;
+
+  const checked = [...document.querySelectorAll('#types-grid input:checked')].map(x => x.value);
+  const selectedTypes = TYPES.filter(t => checked.includes(t.slug));
+
+  log(`🔍 Start scrapowania: ${domain}`, '');
+  setProgress(2);
+
+  let idx = 0;
+  for (const t of selectedTypes) {
+    log(`\n→ Pobieranie: ${t.label}`, '');
+    const items = await fetchAllPages(domain, t.endpoint);
+    log(`  Zebrano: ${items.length} rekordów`, items.length > 0 ? 'log-ok' : 'log-warn');
+
+    const badge = document.getElementById('badge-' + t.slug);
+    if (badge) { badge.textContent = items.length; }
+    const chk = document.getElementById('chk-' + t.slug);
+    if (chk && items.length > 0) chk.classList.add('done');
+
+    allResults.push(...items.map(item => ({
+      id: item.id,
+      type: t.endpoint,
+      title: (item.title && item.title.rendered) ? item.title.rendered.replace(/&amp;/g,'&').replace(/&#8211;/g,'–') : '',
+      link: item.link || '',
+      slug: item.slug || '',
+      status: item.status || '',
+    })));
+
+    idx++;
+    setProgress(Math.round((idx / selectedTypes.length) * 100));
+  }
+
+  setProgress(100);
+  log(`\n✅ Gotowe! Zebrano łącznie ${allResults.length} URL-i.`, 'log-ok');
+
+  renderTable();
+  renderStats();
+  document.getElementById('btn-run').disabled = false;
+}
+
+function renderTable() {
+  const tbody = document.getElementById('results-body');
+  tbody.innerHTML = '';
+  allResults.forEach((row, i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${i+1}</td>
+      <td>${row.id}</td>
+      <td><span class="type-pill">${row.type}</span></td>
+      <td>${row.title}</td>
+      <td><a href="${row.link}" target="_blank" style="color:var(--sempai-green)">${row.link}</a></td>
+      <td>${row.slug}</td>
+      <td>${row.status}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+  document.getElementById('table-wrap').style.display = 'block';
+  document.getElementById('actions').style.display = 'flex';
+}
+
+function renderStats() {
+  const total = allResults.length;
+  const pages = allResults.filter(r => r.type === 'pages').length;
+  const products = allResults.filter(r => r.type === 'product').length;
+  const other = total - pages - products;
+  document.getElementById('s-total').textContent = total;
+  document.getElementById('s-pages').textContent = pages;
+  document.getElementById('s-products').textContent = products;
+  document.getElementById('s-other').textContent = other;
+  document.getElementById('stats').style.display = 'flex';
+}
+
+function buildCSV() {
+  const header = ['ID','Typ','Tytuł','URL','Slug','Status'];
+  const rows = allResults.map(r => [
+    r.id,
+    r.type,
+    `"${r.title.replace(/"/g,'""')}"`,
+    r.link,
+    r.slug,
+    r.status,
+  ].join(','));
+  return [header.join(','), ...rows].join('\n');
+}
+
+function downloadCSV() {
+  const csv = '\uFEFF' + buildCSV(); // BOM dla Excela
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'clicky_pl_url_structure.csv';
+  a.click();
+}
+
+function copyCSV() {
+  navigator.clipboard.writeText(buildCSV()).then(() => alert('CSV skopiowany do schowka!'));
+}
+</script>
+</body>
+</html>
