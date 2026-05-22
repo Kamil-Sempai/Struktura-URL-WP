@@ -11,32 +11,18 @@
     --sempai-green2: #41ad49;
     --sempai-muted:  #607086;
     --sempai-border: #cfd4db;
-    --sempai-white:  #ffffff;
     --font-main: Arial, sans-serif;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: var(--font-main);
-    background: #f4f6f8;
-    color: var(--sempai-dark);
-    min-height: 100vh;
-    padding: 32px 16px;
-  }
-  .wrapper { max-width: 900px; margin: 0 auto; }
+  body { font-family: var(--font-main); background: #f4f6f8; color: var(--sempai-dark); min-height: 100vh; padding: 32px 16px; }
+  .wrapper { max-width: 960px; margin: 0 auto; }
 
   header {
-    background: var(--sempai-dark);
-    color: white;
-    border-radius: 8px 8px 0 0;
-    padding: 24px 28px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
+    background: var(--sempai-dark); color: white; border-radius: 8px 8px 0 0;
+    padding: 24px 28px; display: flex; align-items: center; gap: 14px;
   }
   .logo-dot {
-    width: 38px; height: 38px;
-    background: var(--sempai-green);
-    border-radius: 50%;
+    width: 38px; height: 38px; background: var(--sempai-green); border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
     font-weight: 700; font-size: 19px; color: white; flex-shrink: 0;
   }
@@ -44,152 +30,116 @@
   header p  { font-size: 13px; color: #9ba8bf; margin-top: 2px; }
 
   .body-card {
-    background: white;
-    border: 1px solid var(--sempai-border);
-    border-top: none;
-    border-radius: 0 0 8px 8px;
-    padding: 28px;
+    background: white; border: 1px solid var(--sempai-border);
+    border-top: none; border-radius: 0 0 8px 8px; padding: 28px;
   }
+
+  .steps {
+    display: flex; margin-bottom: 24px; border: 1px solid var(--sempai-border);
+    border-radius: 6px; overflow: hidden;
+  }
+  .step {
+    flex: 1; text-align: center; padding: 10px 6px; font-size: 12px;
+    color: var(--sempai-muted); border-right: 1px solid var(--sempai-border);
+  }
+  .step:last-child { border-right: none; }
+  .step .snum {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 20px; height: 20px; border-radius: 50%; background: var(--sempai-border);
+    color: var(--sempai-muted); font-weight: 700; font-size: 11px; margin-right: 5px;
+  }
+  .step.active { background: #f0faf0; color: var(--sempai-dark); }
+  .step.active .snum { background: var(--sempai-green); color: white; }
+  .step.done { color: var(--sempai-green); }
+  .step.done .snum { background: var(--sempai-green); color: white; }
 
   .section-label {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .06em;
-    color: var(--sempai-muted);
-    margin-bottom: 10px;
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .06em; color: var(--sempai-muted); margin-bottom: 10px;
   }
+  .section-header {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap;
+  }
+  .section-header .section-label { margin-bottom: 0; }
+  .section-badge {
+    background: var(--sempai-dark); color: white; border-radius: 10px;
+    font-size: 11px; font-weight: 700; padding: 2px 9px;
+  }
+  .section-badge.green { background: var(--sempai-green); }
 
-  .field-row {
-    display: flex; gap: 10px; margin-bottom: 20px; align-items: center; flex-wrap: wrap;
-  }
+  .field-row { display: flex; gap: 10px; margin-bottom: 20px; align-items: center; flex-wrap: wrap; }
   .field-row input {
-    flex: 1; min-width: 220px;
-    border: 1px solid var(--sempai-border);
-    border-radius: 4px;
-    padding: 10px 14px;
-    font-family: var(--font-main);
-    font-size: 14px;
-    color: var(--sempai-dark);
-    outline: none;
-    transition: border-color .15s;
+    flex: 1; min-width: 220px; border: 1px solid var(--sempai-border);
+    border-radius: 4px; padding: 10px 14px; font-family: var(--font-main);
+    font-size: 14px; color: var(--sempai-dark); outline: none; transition: border-color .15s;
   }
   .field-row input:focus { border-color: var(--sempai-green); }
 
   .btn {
-    background: var(--sempai-green);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 11px 22px;
-    font-family: var(--font-main);
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background .15s;
-    white-space: nowrap;
+    background: var(--sempai-green); color: white; border: none; border-radius: 4px;
+    padding: 11px 22px; font-family: var(--font-main); font-size: 14px;
+    font-weight: 700; cursor: pointer; transition: background .15s; white-space: nowrap;
   }
   .btn:hover:not(:disabled) { background: var(--sempai-green2); }
   .btn:disabled { background: var(--sempai-border); color: var(--sempai-muted); cursor: not-allowed; }
   .btn-outline {
-    background: white;
-    color: var(--sempai-green);
-    border: 2px solid var(--sempai-green);
+    background: white; color: var(--sempai-green); border: 2px solid var(--sempai-green);
   }
   .btn-outline:hover:not(:disabled) { background: #f0faf0; }
   .btn-sm { padding: 7px 14px; font-size: 13px; }
 
-  /* Types panel */
-  #types-panel { display: none; margin-bottom: 20px; }
-  .types-toolbar {
-    display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap;
-  }
+  .types-toolbar { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
   .types-toolbar span { font-size: 13px; color: var(--sempai-muted); margin-right: auto; }
+
   .types-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
-    gap: 8px;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); gap: 8px;
   }
   .type-check {
-    display: flex; align-items: center; gap: 8px;
-    border: 1px solid var(--sempai-border);
-    border-radius: 4px;
-    padding: 9px 12px;
-    cursor: pointer;
-    transition: border-color .15s, background .15s;
-    font-size: 13px;
-    user-select: none;
+    display: flex; align-items: center; gap: 8px; border: 1px solid var(--sempai-border);
+    border-radius: 4px; padding: 9px 12px; cursor: pointer;
+    transition: border-color .15s, background .15s; font-size: 13px; user-select: none;
   }
   .type-check:hover { border-color: var(--sempai-green); background: #f0faf0; }
+  .type-check.tax { border-style: dashed; }
   .type-check input[type=checkbox] { accent-color: var(--sempai-green); width: 15px; height: 15px; cursor: pointer; flex-shrink:0; }
   .type-check .badge {
-    margin-left: auto;
-    background: var(--sempai-border);
-    color: var(--sempai-muted);
-    border-radius: 10px;
-    font-size: 11px;
-    padding: 1px 7px;
-    min-width: 24px;
-    text-align: center;
+    margin-left: auto; background: var(--sempai-border); color: var(--sempai-muted);
+    border-radius: 10px; font-size: 11px; padding: 1px 7px; min-width: 24px; text-align: center;
   }
   .type-check.done .badge { background: var(--sempai-green); color: white; }
-  .system-note {
-    margin-top: 8px;
-    font-size: 12px;
-    color: var(--sempai-muted);
-  }
+  .endpoint-label { color: var(--sempai-muted); font-size: 11px; display: block; }
 
   .divider { border: none; border-top: 1px solid var(--sempai-border); margin: 22px 0; }
+  .system-note { margin-top: 8px; font-size: 12px; color: var(--sempai-muted); }
 
   #progress-bar-wrap {
-    background: var(--sempai-border);
-    border-radius: 4px;
-    height: 6px;
-    margin-bottom: 16px;
-    display: none;
-    overflow: hidden;
+    background: var(--sempai-border); border-radius: 4px; height: 6px;
+    margin-bottom: 16px; display: none; overflow: hidden;
   }
-  #progress-bar {
-    height: 6px;
-    background: var(--sempai-green);
-    width: 0%;
-    transition: width .4s;
-    border-radius: 4px;
-  }
+  #progress-bar { height: 6px; background: var(--sempai-green); width: 0%; transition: width .4s; border-radius: 4px; }
 
   #log-box {
-    background: #f7f9fb;
-    border: 1px solid var(--sempai-border);
-    border-radius: 4px;
-    padding: 14px 16px;
-    font-size: 13px;
-    line-height: 1.75;
-    min-height: 48px;
-    max-height: 200px;
-    overflow-y: auto;
-    display: none;
-    margin-bottom: 16px;
-    font-family: monospace;
+    background: #f7f9fb; border: 1px solid var(--sempai-border); border-radius: 4px;
+    padding: 14px 16px; font-size: 13px; line-height: 1.75; min-height: 48px;
+    max-height: 200px; overflow-y: auto; display: none; margin-bottom: 16px; font-family: monospace;
   }
   .log-ok   { color: var(--sempai-green); }
   .log-warn { color: #c07000; }
   .log-err  { color: #c0392b; }
   .log-info { color: var(--sempai-muted); }
 
-  #stats {
-    display: none;
-    gap: 10px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
+  .info-box {
+    background: #f0faf0; border: 1px solid #b2deb6; border-radius: 4px;
+    padding: 12px 16px; font-size: 13px; color: var(--sempai-dark);
+    margin-bottom: 20px; display: none;
   }
+
+  #stats { display: none; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
   .stat-card {
-    flex: 1; min-width: 100px;
-    border: 1px solid var(--sempai-border);
-    border-radius: 6px;
-    padding: 12px 16px;
-    text-align: center;
+    flex: 1; min-width: 100px; border: 1px solid var(--sempai-border);
+    border-radius: 6px; padding: 12px 16px; text-align: center;
   }
-  .stat-card .num { font-size: 30px; font-weight: 700; color: var(--sempai-dark); line-height: 1; }
+  .stat-card .num { font-size: 28px; font-weight: 700; color: var(--sempai-dark); line-height: 1; }
   .stat-card .lbl { font-size: 12px; color: var(--sempai-muted); margin-top: 4px; }
 
   #table-wrap { display: none; overflow-x: auto; margin-bottom: 16px; border: 1px solid var(--sempai-border); border-radius: 4px; }
@@ -200,141 +150,107 @@
   tbody tr:hover { background: #eef8ee; }
   tbody td { padding: 7px 12px; border-bottom: 1px solid var(--sempai-border); word-break: break-all; }
   .type-pill {
-    display: inline-block;
-    padding: 2px 9px;
-    border-radius: 10px;
-    font-size: 11px;
-    font-weight: 700;
-    background: var(--sempai-dark);
-    color: white;
-    white-space: nowrap;
+    display: inline-block; padding: 2px 9px; border-radius: 10px;
+    font-size: 11px; font-weight: 700; white-space: nowrap;
   }
+  .pill-post { background: var(--sempai-dark); color: white; }
+  .pill-tax  { background: #e8f5e9; color: var(--sempai-green); border: 1px solid #b2deb6; }
 
   #actions { display: none; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
-
-  .info-box {
-    background: #f0faf0;
-    border: 1px solid #b2deb6;
-    border-radius: 4px;
-    padding: 12px 16px;
-    font-size: 13px;
-    color: var(--sempai-dark);
-    margin-bottom: 20px;
-    display: none;
-  }
-  .info-box strong { color: var(--sempai-green); }
-
-  /* Step indicators */
-  .steps {
-    display: flex; gap: 0; margin-bottom: 24px; border: 1px solid var(--sempai-border); border-radius: 6px; overflow: hidden;
-  }
-  .step {
-    flex: 1; text-align: center; padding: 10px 8px; font-size: 12px; color: var(--sempai-muted);
-    border-right: 1px solid var(--sempai-border); transition: background .2s, color .2s;
-  }
-  .step:last-child { border-right: none; }
-  .step .snum {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 20px; height: 20px; border-radius: 50%;
-    background: var(--sempai-border); color: var(--sempai-muted);
-    font-weight: 700; font-size: 11px; margin-right: 6px;
-  }
-  .step.active { background: #f0faf0; color: var(--sempai-dark); }
-  .step.active .snum { background: var(--sempai-green); color: white; }
-  .step.done { color: var(--sempai-green); }
-  .step.done .snum { background: var(--sempai-green); color: white; }
 </style>
 </head>
 <body>
 <div class="wrapper">
-
   <header>
     <div class="logo-dot">S</div>
     <div>
-      <h1>WordPress URL Scraper <span style="font-weight:400;opacity:.7;font-size:15px;">— uniwersalny</span></h1>
-      <p>Automatyczne wykrywanie typów treści + eksport CSV | Sempai SEO Tools</p>
+      <h1>WordPress URL Scraper <span style="font-weight:400;opacity:.7;font-size:15px;">+ WooCommerce kategorie</span></h1>
+      <p>Automatyczne wykrywanie typów treści i taksonomii (kategorie, tagi) | Sempai SEO Tools</p>
     </div>
   </header>
 
   <div class="body-card">
 
-    <!-- Steps -->
     <div class="steps">
       <div class="step active" id="step1"><span class="snum">1</span>Wpisz domenę</div>
-      <div class="step" id="step2"><span class="snum">2</span>Wykryj typy treści</div>
+      <div class="step" id="step2"><span class="snum">2</span>Wykryj typy i kategorie</div>
       <div class="step" id="step3"><span class="snum">3</span>Zbierz URL-e</div>
       <div class="step" id="step4"><span class="snum">4</span>Pobierz CSV</div>
     </div>
 
-    <!-- Step 1: domain -->
     <div class="section-label">Adres strony WordPress</div>
     <div class="field-row">
-      <input type="text" id="domain" placeholder="https://domena.pl" value="">
-      <button class="btn" id="btn-detect" onclick="detectTypes()">🔍 Wykryj typy treści</button>
+      <input type="text" id="domain" placeholder="https://domena.pl">
+      <button class="btn" id="btn-detect" onclick="detectAll()">🔍 Wykryj typy treści i kategorie</button>
     </div>
 
-    <!-- Info box -->
     <div class="info-box" id="info-box"></div>
 
-    <!-- Step 2: types -->
-    <div id="types-panel">
-      <div class="section-label">Wykryte typy treści — zaznacz które chcesz zebrać</div>
-      <div class="types-toolbar">
-        <span id="types-count-label"></span>
-        <button class="btn btn-outline btn-sm" onclick="toggleAll(true)">Zaznacz wszystkie</button>
-        <button class="btn btn-outline btn-sm" onclick="toggleAll(false)">Odznacz wszystkie</button>
+    <!-- Panel typów i taksonomii -->
+    <div id="types-panel" style="display:none">
+
+      <!-- Post types -->
+      <div class="section-header">
+        <span class="section-label">Typy treści (posty, strony, produkty...)</span>
+        <span class="section-badge" id="pt-count-badge">0</span>
       </div>
-      <div class="types-grid" id="types-grid"></div>
+      <div class="types-toolbar">
+        <span id="pt-count-label"></span>
+        <button class="btn btn-outline btn-sm" onclick="toggleGroup('pt', true)">Zaznacz</button>
+        <button class="btn btn-outline btn-sm" onclick="toggleGroup('pt', false)">Odznacz</button>
+      </div>
+      <div class="types-grid" id="pt-grid"></div>
+
+      <hr class="divider">
+
+      <!-- Taxonomies -->
+      <div class="section-header">
+        <span class="section-label">Taksonomie (kategorie, tagi, atrybuty...)</span>
+        <span class="section-badge green" id="tax-count-badge">0</span>
+      </div>
+      <div class="types-toolbar">
+        <span id="tax-count-label"></span>
+        <button class="btn btn-outline btn-sm" onclick="toggleGroup('tax', true)">Zaznacz</button>
+        <button class="btn btn-outline btn-sm" onclick="toggleGroup('tax', false)">Odznacz</button>
+      </div>
+      <div class="types-grid" id="tax-grid"></div>
       <p class="system-note" id="system-note"></p>
 
       <hr class="divider">
       <button class="btn" id="btn-run" onclick="startScraping()">▶ Zbierz wszystkie URL-e</button>
     </div>
 
-    <!-- Progress -->
     <div id="progress-bar-wrap"><div id="progress-bar"></div></div>
     <div id="log-box"></div>
-
-    <!-- Stats -->
     <div id="stats"></div>
 
-    <!-- Table -->
     <div id="table-wrap">
-      <table id="results-table">
+      <table>
         <thead>
           <tr>
-            <th>#</th>
-            <th>ID</th>
-            <th>Typ</th>
-            <th>Tytuł</th>
-            <th>Obecny URL</th>
-            <th>Slug</th>
-            <th>Status</th>
+            <th>#</th><th>ID</th><th>Kategoria</th><th>Typ</th>
+            <th>Tytuł / Nazwa</th><th>Obecny URL</th><th>Slug</th><th>Liczba wpisów</th>
           </tr>
         </thead>
         <tbody id="results-body"></tbody>
       </table>
     </div>
 
-    <!-- Actions -->
     <div id="actions">
       <button class="btn" onclick="downloadCSV()">⬇ Pobierz CSV</button>
-      <button class="btn btn-outline" onclick="copyCSV()">📋 Kopiuj CSV do schowka</button>
+      <button class="btn btn-outline" onclick="copyCSV()">📋 Kopiuj CSV</button>
     </div>
 
   </div>
 </div>
 
 <script>
-// System types to skip (not useful for SEO)
-const SYSTEM_TYPES = new Set([
-  'attachment','nav_menu_item','wp_block','wp_template',
-  'wp_template_part','wp_navigation','revision','customize_changeset',
-  'custom_css','oembed_cache','user_request','wp_global_styles'
-]);
+const SYSTEM_PT  = new Set(['attachment','nav_menu_item','wp_block','wp_template','wp_template_part','wp_navigation','revision','customize_changeset','custom_css','oembed_cache','user_request','wp_global_styles']);
+const SYSTEM_TAX = new Set(['nav_menu','link_category','post_format']);
 
-let detectedTypes = [];
-let allResults = [];
+let postTypes   = [];  // { slug, label, endpoint }
+let taxonomies  = [];  // { slug, label, endpoint }
+let allResults  = [];
 
 function setStep(n) {
   for (let i = 1; i <= 4; i++) {
@@ -348,32 +264,43 @@ function setStep(n) {
 function log(msg, cls='') {
   const box = document.getElementById('log-box');
   box.style.display = 'block';
-  const line = document.createElement('div');
-  if (cls) line.className = cls;
-  line.textContent = msg;
-  box.appendChild(line);
+  const d = document.createElement('div');
+  if (cls) d.className = cls;
+  d.textContent = msg;
+  box.appendChild(d);
   box.scrollTop = box.scrollHeight;
 }
-
 function clearLog() {
-  const box = document.getElementById('log-box');
-  box.innerHTML = '';
-  box.style.display = 'none';
+  const b = document.getElementById('log-box');
+  b.innerHTML = ''; b.style.display = 'none';
 }
-
-function setProgress(pct) {
+function setProgress(p) {
   document.getElementById('progress-bar-wrap').style.display = 'block';
-  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-bar').style.width = p + '%';
 }
-
 function showInfo(html, show=true) {
   const el = document.getElementById('info-box');
   el.innerHTML = html;
   el.style.display = show ? 'block' : 'none';
 }
 
-// ── STEP 1: Detect types ────────────────────────────────────────────────
-async function detectTypes() {
+function buildCheckbox(t, group, isTax=false) {
+  const lbl = document.createElement('label');
+  lbl.className = 'type-check' + (isTax ? ' tax' : '');
+  lbl.id = `chk-wrap-${group}-${t.slug}`;
+  lbl.innerHTML = `
+    <input type="checkbox" data-group="${group}" value="${t.slug}" checked>
+    <span>
+      ${t.label}
+      <small class="endpoint-label">/${t.endpoint}</small>
+    </span>
+    <span class="badge" id="badge-${group}-${t.slug}">–</span>
+  `;
+  return lbl;
+}
+
+// ── DETECT ────────────────────────────────────────────────────────────
+async function detectAll() {
   const domain = document.getElementById('domain').value.trim().replace(/\/$/, '');
   if (!domain) { alert('Wpisz adres strony!'); return; }
 
@@ -387,89 +314,125 @@ async function detectTypes() {
   document.getElementById('btn-detect').disabled = true;
   setStep(2);
 
-  const url = `${domain}/wp-json/wp/v2/types`;
-  let data;
+  // Fetch post types
+  let ptData, taxData;
   try {
-    const resp = await fetch(url);
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    data = await resp.json();
+    const [ptResp, taxResp] = await Promise.all([
+      fetch(`${domain}/wp-json/wp/v2/types`),
+      fetch(`${domain}/wp-json/wp/v2/taxonomies`),
+    ]);
+    if (!ptResp.ok) throw new Error(`Typy: HTTP ${ptResp.status}`);
+    if (!taxResp.ok) throw new Error(`Taksonomie: HTTP ${taxResp.status}`);
+    ptData  = await ptResp.json();
+    taxData = await taxResp.json();
   } catch(e) {
-    showInfo(`❌ <strong>Nie udało się połączyć.</strong> Sprawdź czy adres jest poprawny i czy strona ma włączone REST API.<br><small>Błąd: ${e.message}</small>`, true);
+    showInfo(`❌ <strong>Błąd połączenia.</strong> Sprawdź adres i czy REST API jest aktywne.<br><small>${e.message}</small>`, true);
     document.getElementById('btn-detect').disabled = false;
     setStep(1);
     return;
   }
 
-  // Filter out system types
-  const contentTypes = Object.values(data).filter(t => !SYSTEM_TYPES.has(t.slug));
-  const skippedCount = Object.keys(data).length - contentTypes.length;
+  // Post types
+  postTypes = Object.values(ptData)
+    .filter(t => !SYSTEM_PT.has(t.slug))
+    .map(t => ({ slug: t.slug, label: t.name, endpoint: t.rest_base }));
 
-  detectedTypes = contentTypes.map(t => ({
-    slug: t.slug,
-    label: t.name,
-    endpoint: t.rest_base,
-  }));
+  // Taxonomies
+  taxonomies = Object.values(taxData)
+    .filter(t => !SYSTEM_TAX.has(t.slug))
+    .map(t => ({ slug: t.slug, label: t.name, endpoint: t.rest_base }));
 
-  // Build checkboxes
-  const grid = document.getElementById('types-grid');
-  grid.innerHTML = '';
-  detectedTypes.forEach(t => {
-    const lbl = document.createElement('label');
-    lbl.className = 'type-check';
-    lbl.id = 'chk-wrap-' + t.slug;
-    lbl.innerHTML = `<input type="checkbox" value="${t.slug}" checked> ${t.label}<br><small style="color:var(--sempai-muted);font-size:11px;">/${t.endpoint}</small> <span class="badge" id="badge-${t.slug}">–</span>`;
-    grid.appendChild(lbl);
-  });
+  const ptSkipped  = Object.keys(ptData).length  - postTypes.length;
+  const taxSkipped = Object.keys(taxData).length - taxonomies.length;
 
-  document.getElementById('types-count-label').textContent =
-    `Znaleziono ${detectedTypes.length} typ${detectedTypes.length === 1 ? '' : detectedTypes.length < 5 ? 'y' : 'ów'} treści`;
+  // Build PT grid
+  const ptGrid = document.getElementById('pt-grid');
+  ptGrid.innerHTML = '';
+  postTypes.forEach(t => ptGrid.appendChild(buildCheckbox(t, 'pt', false)));
+  document.getElementById('pt-count-badge').textContent = postTypes.length;
+  document.getElementById('pt-count-label').textContent = `${postTypes.length} typów treści`;
+
+  // Build Tax grid
+  const taxGrid = document.getElementById('tax-grid');
+  taxGrid.innerHTML = '';
+  taxonomies.forEach(t => taxGrid.appendChild(buildCheckbox(t, 'tax', true)));
+  document.getElementById('tax-count-badge').textContent = taxonomies.length;
+  document.getElementById('tax-count-label').textContent = `${taxonomies.length} taksonomii (w tym kategorie produktów WooCommerce)`;
+
   document.getElementById('system-note').textContent =
-    `Pominięto ${skippedCount} systemowych typów WordPressa (szablony, media, bloki).`;
+    `Pominięto: ${ptSkipped} systemowych typów i ${taxSkipped} systemowych taksonomii WordPressa.`;
 
-  showInfo(`✅ <strong>Wykryto ${detectedTypes.length} typów treści</strong> na ${domain}. Zaznacz które chcesz zebrać i kliknij „Zbierz URL-e".`, true);
+  showInfo(`✅ <strong>Gotowe!</strong> Wykryto ${postTypes.length} typów treści i ${taxonomies.length} taksonomii. Zaznacz co chcesz zebrać i kliknij „Zbierz URL-e".`, true);
   document.getElementById('types-panel').style.display = 'block';
   document.getElementById('btn-detect').disabled = false;
   setStep(3);
 }
 
-function toggleAll(state) {
-  document.querySelectorAll('#types-grid input[type=checkbox]').forEach(cb => cb.checked = state);
+function toggleGroup(group, state) {
+  document.querySelectorAll(`#types-grid input[data-group="${group}"], #pt-grid input[data-group="${group}"], #tax-grid input[data-group="${group}"]`).forEach(cb => cb.checked = state);
 }
 
-// ── STEP 2: Scrape ─────────────────────────────────────────────────────
-async function fetchAllPages(base, endpoint) {
+// ── FETCH helpers ─────────────────────────────────────────────────────
+async function fetchPostTypePages(base, endpoint) {
   const items = [];
   let page = 1;
   while (true) {
     const url = `${base}/wp-json/wp/v2/${endpoint}?per_page=100&page=${page}&_fields=id,slug,link,status,title,type`;
     let resp;
-    try { resp = await fetch(url); }
-    catch(e) { log(`  ✗ Błąd sieci (${endpoint}, strona ${page}): ${e.message}`, 'log-err'); break; }
-
+    try { resp = await fetch(url); } catch(e) { log(`  ✗ Błąd sieci: ${e.message}`, 'log-err'); break; }
     if (resp.status === 400 || resp.status === 404) break;
-    if (!resp.ok) { log(`  ✗ HTTP ${resp.status} dla /${endpoint}`, 'log-err'); break; }
-
+    if (!resp.ok) { log(`  ✗ HTTP ${resp.status}`, 'log-err'); break; }
     const totalPages = parseInt(resp.headers.get('X-WP-TotalPages') || '1');
     const totalItems = parseInt(resp.headers.get('X-WP-Total') || '0');
-
-    let data;
-    try { data = await resp.json(); } catch(e) { break; }
+    let data; try { data = await resp.json(); } catch(e) { break; }
     if (!data || data.length === 0) break;
-
     items.push(...data);
-    log(`  ✓ Strona ${page}/${totalPages} — pobrano ${data.length} z ${totalItems} rekordów`, 'log-ok');
+    log(`  ✓ Strona ${page}/${totalPages} — ${data.length}/${totalItems} rekordów`, 'log-ok');
     if (page >= totalPages) break;
     page++;
   }
   return items;
 }
 
+async function fetchTaxonomyPages(base, endpoint) {
+  const items = [];
+  let page = 1;
+  while (true) {
+    const url = `${base}/wp-json/wp/v2/${endpoint}?per_page=100&page=${page}&_fields=id,slug,link,name,count,taxonomy&hide_empty=false`;
+    let resp;
+    try { resp = await fetch(url); } catch(e) { log(`  ✗ Błąd sieci: ${e.message}`, 'log-err'); break; }
+    if (resp.status === 400 || resp.status === 404) break;
+    if (!resp.ok) { log(`  ✗ HTTP ${resp.status}`, 'log-err'); break; }
+    const totalPages = parseInt(resp.headers.get('X-WP-TotalPages') || '1');
+    const totalItems = parseInt(resp.headers.get('X-WP-Total') || '0');
+    let data; try { data = await resp.json(); } catch(e) { break; }
+    if (!data || data.length === 0) break;
+    items.push(...data);
+    log(`  ✓ Strona ${page}/${totalPages} — ${data.length}/${totalItems} kategorii`, 'log-ok');
+    if (page >= totalPages) break;
+    page++;
+  }
+  return items;
+}
+
+function cleanTitle(t) {
+  return (t || '').replace(/<[^>]+>/g,'').replace(/&amp;/g,'&').replace(/&#8211;/g,'–').replace(/&nbsp;/g,' ').replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(n));
+}
+
+// ── SCRAPE ────────────────────────────────────────────────────────────
 async function startScraping() {
   const domain = document.getElementById('domain').value.trim().replace(/\/$/, '');
-  const checked = [...document.querySelectorAll('#types-grid input:checked')].map(x => x.value);
-  const selected = detectedTypes.filter(t => checked.includes(t.slug));
 
-  if (selected.length === 0) { alert('Zaznacz przynajmniej jeden typ treści!'); return; }
+  const selPT  = postTypes.filter(t  => {
+    const cb = document.querySelector(`#pt-grid  input[value="${t.slug}"]`);
+    return cb && cb.checked;
+  });
+  const selTax = taxonomies.filter(t => {
+    const cb = document.querySelector(`#tax-grid input[value="${t.slug}"]`);
+    return cb && cb.checked;
+  });
+
+  if (selPT.length + selTax.length === 0) { alert('Zaznacz przynajmniej jeden typ lub taksonomię!'); return; }
 
   allResults = [];
   document.getElementById('results-body').innerHTML = '';
@@ -482,75 +445,80 @@ async function startScraping() {
   showInfo('', false);
   setProgress(2);
 
-  log(`🔍 Start: ${domain}`, 'log-info');
-  log(`📋 Typy do zebrania: ${selected.map(t=>t.label).join(', ')}`, 'log-info');
+  const totalGroups = selPT.length + selTax.length;
+  let done = 0;
+
+  log(`🔍 Domena: ${domain}`, 'log-info');
+  log(`📋 Typy treści (${selPT.length}): ${selPT.map(t=>t.label).join(', ')}`, 'log-info');
+  log(`🏷️  Taksonomie (${selTax.length}): ${selTax.map(t=>t.label).join(', ')}`, 'log-info');
 
   // Reset badges
-  detectedTypes.forEach(t => {
-    const b = document.getElementById('badge-' + t.slug);
+  [...postTypes, ...taxonomies].forEach(t => {
+    const b = document.getElementById(`badge-pt-${t.slug}`) || document.getElementById(`badge-tax-${t.slug}`);
     if (b) b.textContent = '–';
-    const w = document.getElementById('chk-wrap-' + t.slug);
-    if (w) w.classList.remove('done');
   });
 
-  let idx = 0;
-  for (const t of selected) {
-    log(`\n→ ${t.label} (/${t.endpoint})`, 'log-info');
-    const items = await fetchAllPages(domain, t.endpoint);
-    log(`  Razem: ${items.length} rekordów`, items.length > 0 ? 'log-ok' : 'log-warn');
+  // — Post types —
+  for (const t of selPT) {
+    log(`\n→ [TYP] ${t.label} (/${t.endpoint})`, 'log-info');
+    const items = await fetchPostTypePages(domain, t.endpoint);
+    log(`  Razem: ${items.length} wpisów`, items.length ? 'log-ok' : 'log-warn');
 
-    const badge = document.getElementById('badge-' + t.slug);
-    if (badge) { badge.textContent = items.length; }
-    if (items.length > 0) {
-      const wrap = document.getElementById('chk-wrap-' + t.slug);
-      if (wrap) wrap.classList.add('done');
-    }
+    const b = document.getElementById(`badge-pt-${t.slug}`);
+    if (b) b.textContent = items.length;
+    if (items.length) document.getElementById(`chk-wrap-pt-${t.slug}`)?.classList.add('done');
 
     allResults.push(...items.map(item => ({
-      id: item.id,
-      type: t.endpoint,
+      id:        item.id,
+      category:  'Typ treści',
+      type:      t.endpoint,
       typeLabel: t.label,
-      title: item.title?.rendered
-        ? item.title.rendered.replace(/<[^>]+>/g,'').replace(/&amp;/g,'&').replace(/&#8211;/g,'–').replace(/&nbsp;/g,' ')
-        : '',
-      link: item.link || '',
-      slug: item.slug || '',
-      status: item.status || '',
+      title:     cleanTitle(item.title?.rendered),
+      link:      item.link || '',
+      slug:      item.slug || '',
+      status:    item.status || '',
+      count:     '',
+      isTax:     false,
     })));
+    done++;
+    setProgress(Math.round((done / totalGroups) * 100));
+  }
 
-    idx++;
-    setProgress(Math.round((idx / selected.length) * 100));
+  // — Taxonomies —
+  for (const t of selTax) {
+    log(`\n→ [TAKSONOMIA] ${t.label} (/${t.endpoint})`, 'log-info');
+    const items = await fetchTaxonomyPages(domain, t.endpoint);
+    log(`  Razem: ${items.length} kategorii/tagów`, items.length ? 'log-ok' : 'log-warn');
+
+    const b = document.getElementById(`badge-tax-${t.slug}`);
+    if (b) b.textContent = items.length;
+    if (items.length) document.getElementById(`chk-wrap-tax-${t.slug}`)?.classList.add('done');
+
+    allResults.push(...items.map(item => ({
+      id:        item.id,
+      category:  'Taksonomia',
+      type:      t.endpoint,
+      typeLabel: t.label,
+      title:     cleanTitle(item.name),
+      link:      item.link || '',
+      slug:      item.slug || '',
+      status:    'publish',
+      count:     item.count ?? '',
+      isTax:     true,
+    })));
+    done++;
+    setProgress(Math.round((done / totalGroups) * 100));
   }
 
   setProgress(100);
   log(`\n✅ Gotowe! Zebrano łącznie ${allResults.length} URL-i.`, 'log-ok');
 
   renderTable();
-  renderStats(selected);
+  renderStats(selPT, selTax);
   document.getElementById('btn-run').disabled = false;
   document.getElementById('btn-detect').disabled = false;
-  showInfo(`✅ <strong>Zebrano ${allResults.length} URL-i</strong> z ${selected.length} typów treści. Pobierz plik CSV poniżej.`, true);
+  showInfo(`✅ <strong>Zebrano ${allResults.length} URL-i</strong> — ${selPT.length} typów treści i ${selTax.length} taksonomii. Pobierz plik CSV poniżej.`, true);
   setStep(4);
-}
-
-function renderStats(selected) {
-  const container = document.getElementById('stats');
-  container.innerHTML = '';
-
-  const totalCard = document.createElement('div');
-  totalCard.className = 'stat-card';
-  totalCard.innerHTML = `<div class="num">${allResults.length}</div><div class="lbl">Wszystkich URL</div>`;
-  container.appendChild(totalCard);
-
-  selected.forEach(t => {
-    const count = allResults.filter(r => r.type === t.endpoint).length;
-    const card = document.createElement('div');
-    card.className = 'stat-card';
-    card.innerHTML = `<div class="num">${count}</div><div class="lbl">${t.label}</div>`;
-    container.appendChild(card);
-  });
-
-  container.style.display = 'flex';
 }
 
 function renderTable() {
@@ -558,14 +526,16 @@ function renderTable() {
   tbody.innerHTML = '';
   allResults.forEach((row, i) => {
     const tr = document.createElement('tr');
+    const pillClass = row.isTax ? 'pill-tax' : 'pill-post';
     tr.innerHTML = `
       <td style="color:var(--sempai-muted);font-size:11px">${i+1}</td>
       <td><strong>${row.id}</strong></td>
-      <td><span class="type-pill">${row.type}</span></td>
+      <td style="font-size:11px;color:var(--sempai-muted)">${row.category}</td>
+      <td><span class="type-pill ${pillClass}">${row.type}</span></td>
       <td>${row.title}</td>
       <td><a href="${row.link}" target="_blank" style="color:var(--sempai-green)">${row.link}</a></td>
       <td style="color:var(--sempai-muted)">${row.slug}</td>
-      <td style="color:var(--sempai-muted)">${row.status}</td>
+      <td style="color:var(--sempai-muted);text-align:center">${row.count !== '' ? row.count : '–'}</td>
     `;
     tbody.appendChild(tr);
   });
@@ -573,24 +543,35 @@ function renderTable() {
   document.getElementById('actions').style.display = 'flex';
 }
 
+function renderStats(selPT, selTax) {
+  const container = document.getElementById('stats');
+  container.innerHTML = '';
+  const add = (num, lbl) => {
+    const c = document.createElement('div');
+    c.className = 'stat-card';
+    c.innerHTML = `<div class="num">${num}</div><div class="lbl">${lbl}</div>`;
+    container.appendChild(c);
+  };
+  add(allResults.length, 'Wszystkich URL');
+  add(allResults.filter(r=>!r.isTax).length, 'Wpisy / Strony');
+  add(allResults.filter(r=>r.isTax).length,  'Kategorie / Tagi');
+  container.style.display = 'flex';
+}
+
 function buildCSV() {
-  const header = ['ID','Typ (endpoint)','Typ (nazwa)','Tytuł','Obecny URL','Slug','Status'];
+  const header = ['ID','Kategoria','Typ (endpoint)','Typ (nazwa)','Tytuł / Nazwa','Obecny URL','Slug','Status','Liczba wpisów'];
   const rows = allResults.map(r => [
-    r.id,
-    r.type,
-    r.typeLabel,
+    r.id, r.category, r.type, r.typeLabel,
     `"${r.title.replace(/"/g,'""')}"`,
-    r.link,
-    r.slug,
-    r.status,
+    r.link, r.slug, r.status, r.count
   ].join(','));
   return [header.join(','), ...rows].join('\n');
 }
 
 function getFilename() {
-  const domain = document.getElementById('domain').value.trim()
+  const d = document.getElementById('domain').value.trim()
     .replace(/https?:\/\//,'').replace(/\//g,'').replace(/\./g,'_');
-  return `${domain}_url_structure.csv`;
+  return `${d}_url_structure.csv`;
 }
 
 function downloadCSV() {
@@ -605,7 +586,7 @@ function downloadCSV() {
 function copyCSV() {
   navigator.clipboard.writeText(buildCSV())
     .then(() => alert('✅ CSV skopiowany do schowka!'))
-    .catch(() => alert('Nie udało się skopiować — spróbuj przycisku Pobierz CSV.'));
+    .catch(() => alert('Nie udało się skopiować — użyj przycisku Pobierz CSV.'));
 }
 </script>
 </body>
