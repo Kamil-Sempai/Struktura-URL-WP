@@ -22,7 +22,7 @@
     min-height: 100vh;
     padding: 32px 16px;
   }
-  .wrapper { max-width: 860px; margin: 0 auto; }
+  .wrapper { max-width: 900px; margin: 0 auto; }
 
   header {
     background: var(--sempai-dark);
@@ -34,11 +34,11 @@
     gap: 14px;
   }
   .logo-dot {
-    width: 36px; height: 36px;
+    width: 38px; height: 38px;
     background: var(--sempai-green);
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    font-weight: 700; font-size: 18px; color: white; flex-shrink: 0;
+    font-weight: 700; font-size: 19px; color: white; flex-shrink: 0;
   }
   header h1 { font-size: 20px; font-weight: 700; }
   header p  { font-size: 13px; color: #9ba8bf; margin-top: 2px; }
@@ -51,11 +51,20 @@
     padding: 28px;
   }
 
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--sempai-muted);
+    margin-bottom: 10px;
+  }
+
   .field-row {
     display: flex; gap: 10px; margin-bottom: 20px; align-items: center; flex-wrap: wrap;
   }
   .field-row input {
-    flex: 1; min-width: 200px;
+    flex: 1; min-width: 220px;
     border: 1px solid var(--sempai-border);
     border-radius: 4px;
     padding: 10px 14px;
@@ -63,36 +72,9 @@
     font-size: 14px;
     color: var(--sempai-dark);
     outline: none;
+    transition: border-color .15s;
   }
   .field-row input:focus { border-color: var(--sempai-green); }
-
-  .types-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
-    gap: 8px;
-    margin-bottom: 20px;
-  }
-  .type-check {
-    display: flex; align-items: center; gap: 8px;
-    border: 1px solid var(--sempai-border);
-    border-radius: 4px;
-    padding: 8px 12px;
-    cursor: pointer;
-    transition: border-color .15s, background .15s;
-    font-size: 13px;
-    user-select: none;
-  }
-  .type-check:hover { border-color: var(--sempai-green); background: #f0faf0; }
-  .type-check input[type=checkbox] { accent-color: var(--sempai-green); width: 15px; height: 15px; cursor: pointer; }
-  .type-check .badge {
-    margin-left: auto;
-    background: var(--sempai-border);
-    color: var(--sempai-muted);
-    border-radius: 10px;
-    font-size: 11px;
-    padding: 1px 7px;
-  }
-  .type-check.done .badge { background: var(--sempai-green); color: white; }
 
   .btn {
     background: var(--sempai-green);
@@ -107,41 +89,57 @@
     transition: background .15s;
     white-space: nowrap;
   }
-  .btn:hover { background: var(--sempai-green2); }
+  .btn:hover:not(:disabled) { background: var(--sempai-green2); }
   .btn:disabled { background: var(--sempai-border); color: var(--sempai-muted); cursor: not-allowed; }
   .btn-outline {
     background: white;
     color: var(--sempai-green);
     border: 2px solid var(--sempai-green);
   }
-  .btn-outline:hover { background: #f0faf0; }
+  .btn-outline:hover:not(:disabled) { background: #f0faf0; }
+  .btn-sm { padding: 7px 14px; font-size: 13px; }
 
-  .section-label {
-    font-size: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .05em;
-    color: var(--sempai-muted);
-    margin-bottom: 10px;
+  /* Types panel */
+  #types-panel { display: none; margin-bottom: 20px; }
+  .types-toolbar {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap;
   }
-  .divider { border: none; border-top: 1px solid var(--sempai-border); margin: 22px 0; }
-
-  #log-box {
-    background: #f7f9fb;
+  .types-toolbar span { font-size: 13px; color: var(--sempai-muted); margin-right: auto; }
+  .types-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+    gap: 8px;
+  }
+  .type-check {
+    display: flex; align-items: center; gap: 8px;
     border: 1px solid var(--sempai-border);
     border-radius: 4px;
-    padding: 14px 16px;
+    padding: 9px 12px;
+    cursor: pointer;
+    transition: border-color .15s, background .15s;
     font-size: 13px;
-    line-height: 1.7;
-    min-height: 48px;
-    max-height: 220px;
-    overflow-y: auto;
-    display: none;
-    margin-bottom: 16px;
+    user-select: none;
   }
-  .log-ok   { color: var(--sempai-green); }
-  .log-warn { color: #e07b00; }
-  .log-err  { color: #c0392b; }
+  .type-check:hover { border-color: var(--sempai-green); background: #f0faf0; }
+  .type-check input[type=checkbox] { accent-color: var(--sempai-green); width: 15px; height: 15px; cursor: pointer; flex-shrink:0; }
+  .type-check .badge {
+    margin-left: auto;
+    background: var(--sempai-border);
+    color: var(--sempai-muted);
+    border-radius: 10px;
+    font-size: 11px;
+    padding: 1px 7px;
+    min-width: 24px;
+    text-align: center;
+  }
+  .type-check.done .badge { background: var(--sempai-green); color: white; }
+  .system-note {
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--sempai-muted);
+  }
+
+  .divider { border: none; border-top: 1px solid var(--sempai-border); margin: 22px 0; }
 
   #progress-bar-wrap {
     background: var(--sempai-border);
@@ -155,42 +153,96 @@
     height: 6px;
     background: var(--sempai-green);
     width: 0%;
-    transition: width .3s;
+    transition: width .4s;
+    border-radius: 4px;
   }
+
+  #log-box {
+    background: #f7f9fb;
+    border: 1px solid var(--sempai-border);
+    border-radius: 4px;
+    padding: 14px 16px;
+    font-size: 13px;
+    line-height: 1.75;
+    min-height: 48px;
+    max-height: 200px;
+    overflow-y: auto;
+    display: none;
+    margin-bottom: 16px;
+    font-family: monospace;
+  }
+  .log-ok   { color: var(--sempai-green); }
+  .log-warn { color: #c07000; }
+  .log-err  { color: #c0392b; }
+  .log-info { color: var(--sempai-muted); }
 
   #stats {
     display: none;
-    gap: 12px;
+    gap: 10px;
     margin-bottom: 20px;
     flex-wrap: wrap;
   }
   .stat-card {
-    flex: 1; min-width: 110px;
+    flex: 1; min-width: 100px;
     border: 1px solid var(--sempai-border);
     border-radius: 6px;
     padding: 12px 16px;
     text-align: center;
   }
-  .stat-card .num { font-size: 28px; font-weight: 700; color: var(--sempai-dark); }
-  .stat-card .lbl { font-size: 12px; color: var(--sempai-muted); margin-top: 2px; }
+  .stat-card .num { font-size: 30px; font-weight: 700; color: var(--sempai-dark); line-height: 1; }
+  .stat-card .lbl { font-size: 12px; color: var(--sempai-muted); margin-top: 4px; }
 
-  #table-wrap { display: none; overflow-x: auto; margin-bottom: 16px; }
+  #table-wrap { display: none; overflow-x: auto; margin-bottom: 16px; border: 1px solid var(--sempai-border); border-radius: 4px; }
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
   thead tr { background: var(--sempai-dark); color: white; }
-  thead th { padding: 9px 12px; text-align: left; font-weight: 700; white-space: nowrap; }
-  tbody tr:nth-child(even) { background: #f4f6f8; }
+  thead th { padding: 10px 12px; text-align: left; font-weight: 700; white-space: nowrap; }
+  tbody tr:nth-child(even) { background: #f7f9fb; }
+  tbody tr:hover { background: #eef8ee; }
   tbody td { padding: 7px 12px; border-bottom: 1px solid var(--sempai-border); word-break: break-all; }
   .type-pill {
     display: inline-block;
-    padding: 2px 8px;
+    padding: 2px 9px;
     border-radius: 10px;
     font-size: 11px;
     font-weight: 700;
     background: var(--sempai-dark);
     color: white;
+    white-space: nowrap;
   }
 
-  #actions { display: none; gap: 10px; flex-wrap: wrap; }
+  #actions { display: none; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+
+  .info-box {
+    background: #f0faf0;
+    border: 1px solid #b2deb6;
+    border-radius: 4px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--sempai-dark);
+    margin-bottom: 20px;
+    display: none;
+  }
+  .info-box strong { color: var(--sempai-green); }
+
+  /* Step indicators */
+  .steps {
+    display: flex; gap: 0; margin-bottom: 24px; border: 1px solid var(--sempai-border); border-radius: 6px; overflow: hidden;
+  }
+  .step {
+    flex: 1; text-align: center; padding: 10px 8px; font-size: 12px; color: var(--sempai-muted);
+    border-right: 1px solid var(--sempai-border); transition: background .2s, color .2s;
+  }
+  .step:last-child { border-right: none; }
+  .step .snum {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--sempai-border); color: var(--sempai-muted);
+    font-weight: 700; font-size: 11px; margin-right: 6px;
+  }
+  .step.active { background: #f0faf0; color: var(--sempai-dark); }
+  .step.active .snum { background: var(--sempai-green); color: white; }
+  .step.done { color: var(--sempai-green); }
+  .step.done .snum { background: var(--sempai-green); color: white; }
 </style>
 </head>
 <body>
@@ -199,36 +251,54 @@
   <header>
     <div class="logo-dot">S</div>
     <div>
-      <h1>WordPress URL Scraper</h1>
-      <p>Zbieranie struktury URL przez REST API — Sempai SEO Tools</p>
+      <h1>WordPress URL Scraper <span style="font-weight:400;opacity:.7;font-size:15px;">— uniwersalny</span></h1>
+      <p>Automatyczne wykrywanie typów treści + eksport CSV | Sempai SEO Tools</p>
     </div>
   </header>
 
   <div class="body-card">
 
-    <div class="section-label">Domena serwisu</div>
+    <!-- Steps -->
+    <div class="steps">
+      <div class="step active" id="step1"><span class="snum">1</span>Wpisz domenę</div>
+      <div class="step" id="step2"><span class="snum">2</span>Wykryj typy treści</div>
+      <div class="step" id="step3"><span class="snum">3</span>Zbierz URL-e</div>
+      <div class="step" id="step4"><span class="snum">4</span>Pobierz CSV</div>
+    </div>
+
+    <!-- Step 1: domain -->
+    <div class="section-label">Adres strony WordPress</div>
     <div class="field-row">
-      <input type="text" id="domain" value="https://clicky.pl" placeholder="https://domena.pl">
+      <input type="text" id="domain" placeholder="https://domena.pl" value="">
+      <button class="btn" id="btn-detect" onclick="detectTypes()">🔍 Wykryj typy treści</button>
+    </div>
+
+    <!-- Info box -->
+    <div class="info-box" id="info-box"></div>
+
+    <!-- Step 2: types -->
+    <div id="types-panel">
+      <div class="section-label">Wykryte typy treści — zaznacz które chcesz zebrać</div>
+      <div class="types-toolbar">
+        <span id="types-count-label"></span>
+        <button class="btn btn-outline btn-sm" onclick="toggleAll(true)">Zaznacz wszystkie</button>
+        <button class="btn btn-outline btn-sm" onclick="toggleAll(false)">Odznacz wszystkie</button>
+      </div>
+      <div class="types-grid" id="types-grid"></div>
+      <p class="system-note" id="system-note"></p>
+
+      <hr class="divider">
       <button class="btn" id="btn-run" onclick="startScraping()">▶ Zbierz wszystkie URL-e</button>
     </div>
 
-    <div class="section-label">Typy treści do zebrania</div>
-    <div class="types-grid" id="types-grid">
-      <!-- generowane dynamicznie -->
-    </div>
-
-    <hr class="divider">
-
+    <!-- Progress -->
     <div id="progress-bar-wrap"><div id="progress-bar"></div></div>
     <div id="log-box"></div>
 
-    <div id="stats">
-      <div class="stat-card"><div class="num" id="s-total">0</div><div class="lbl">Wszystkich URL</div></div>
-      <div class="stat-card"><div class="num" id="s-pages">0</div><div class="lbl">Stron (pages)</div></div>
-      <div class="stat-card"><div class="num" id="s-products">0</div><div class="lbl">Produktów</div></div>
-      <div class="stat-card"><div class="num" id="s-other">0</div><div class="lbl">Pozostałe CPT</div></div>
-    </div>
+    <!-- Stats -->
+    <div id="stats"></div>
 
+    <!-- Table -->
     <div id="table-wrap">
       <table id="results-table">
         <thead>
@@ -237,7 +307,7 @@
             <th>ID</th>
             <th>Typ</th>
             <th>Tytuł</th>
-            <th>URL (link)</th>
+            <th>Obecny URL</th>
             <th>Slug</th>
             <th>Status</th>
           </tr>
@@ -246,35 +316,34 @@
       </table>
     </div>
 
-    <div id="actions" style="display:none; gap:10px; flex-wrap:wrap; margin-top:4px;">
+    <!-- Actions -->
+    <div id="actions">
       <button class="btn" onclick="downloadCSV()">⬇ Pobierz CSV</button>
-      <button class="btn btn-outline" onclick="copyCSV()">📋 Kopiuj CSV</button>
+      <button class="btn btn-outline" onclick="copyCSV()">📋 Kopiuj CSV do schowka</button>
     </div>
 
   </div>
 </div>
 
 <script>
-const TYPES = [
-  { slug: 'posts',       label: 'Wpisy (post)',      endpoint: 'posts' },
-  { slug: 'pages',       label: 'Strony (page)',      endpoint: 'pages' },
-  { slug: 'product',     label: 'Produkty',           endpoint: 'product' },
-  { slug: 'inspiration', label: 'Inspiracje',         endpoint: 'inspiration' },
-  { slug: 'tutorial',    label: 'Poradniki',          endpoint: 'tutorial' },
-  { slug: 'faq',         label: 'FAQ',                endpoint: 'faq' },
-];
+// System types to skip (not useful for SEO)
+const SYSTEM_TYPES = new Set([
+  'attachment','nav_menu_item','wp_block','wp_template',
+  'wp_template_part','wp_navigation','revision','customize_changeset',
+  'custom_css','oembed_cache','user_request','wp_global_styles'
+]);
 
+let detectedTypes = [];
 let allResults = [];
 
-// Build checkboxes
-const grid = document.getElementById('types-grid');
-TYPES.forEach(t => {
-  const lbl = document.createElement('label');
-  lbl.className = 'type-check';
-  lbl.id = 'chk-' + t.slug;
-  lbl.innerHTML = `<input type="checkbox" value="${t.slug}" checked> ${t.label} <span class="badge" id="badge-${t.slug}">–</span>`;
-  grid.appendChild(lbl);
-});
+function setStep(n) {
+  for (let i = 1; i <= 4; i++) {
+    const el = document.getElementById('step' + i);
+    el.classList.remove('active','done');
+    if (i < n) el.classList.add('done');
+    else if (i === n) el.classList.add('active');
+  }
+}
 
 function log(msg, cls='') {
   const box = document.getElementById('log-box');
@@ -286,89 +355,202 @@ function log(msg, cls='') {
   box.scrollTop = box.scrollHeight;
 }
 
+function clearLog() {
+  const box = document.getElementById('log-box');
+  box.innerHTML = '';
+  box.style.display = 'none';
+}
+
 function setProgress(pct) {
   document.getElementById('progress-bar-wrap').style.display = 'block';
   document.getElementById('progress-bar').style.width = pct + '%';
 }
 
+function showInfo(html, show=true) {
+  const el = document.getElementById('info-box');
+  el.innerHTML = html;
+  el.style.display = show ? 'block' : 'none';
+}
+
+// ── STEP 1: Detect types ────────────────────────────────────────────────
+async function detectTypes() {
+  const domain = document.getElementById('domain').value.trim().replace(/\/$/, '');
+  if (!domain) { alert('Wpisz adres strony!'); return; }
+
+  clearLog();
+  document.getElementById('types-panel').style.display = 'none';
+  document.getElementById('stats').style.display = 'none';
+  document.getElementById('table-wrap').style.display = 'none';
+  document.getElementById('actions').style.display = 'none';
+  document.getElementById('progress-bar-wrap').style.display = 'none';
+  showInfo('⏳ Łączenie z WordPress REST API...', true);
+  document.getElementById('btn-detect').disabled = true;
+  setStep(2);
+
+  const url = `${domain}/wp-json/wp/v2/types`;
+  let data;
+  try {
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    data = await resp.json();
+  } catch(e) {
+    showInfo(`❌ <strong>Nie udało się połączyć.</strong> Sprawdź czy adres jest poprawny i czy strona ma włączone REST API.<br><small>Błąd: ${e.message}</small>`, true);
+    document.getElementById('btn-detect').disabled = false;
+    setStep(1);
+    return;
+  }
+
+  // Filter out system types
+  const contentTypes = Object.values(data).filter(t => !SYSTEM_TYPES.has(t.slug));
+  const skippedCount = Object.keys(data).length - contentTypes.length;
+
+  detectedTypes = contentTypes.map(t => ({
+    slug: t.slug,
+    label: t.name,
+    endpoint: t.rest_base,
+  }));
+
+  // Build checkboxes
+  const grid = document.getElementById('types-grid');
+  grid.innerHTML = '';
+  detectedTypes.forEach(t => {
+    const lbl = document.createElement('label');
+    lbl.className = 'type-check';
+    lbl.id = 'chk-wrap-' + t.slug;
+    lbl.innerHTML = `<input type="checkbox" value="${t.slug}" checked> ${t.label}<br><small style="color:var(--sempai-muted);font-size:11px;">/${t.endpoint}</small> <span class="badge" id="badge-${t.slug}">–</span>`;
+    grid.appendChild(lbl);
+  });
+
+  document.getElementById('types-count-label').textContent =
+    `Znaleziono ${detectedTypes.length} typ${detectedTypes.length === 1 ? '' : detectedTypes.length < 5 ? 'y' : 'ów'} treści`;
+  document.getElementById('system-note').textContent =
+    `Pominięto ${skippedCount} systemowych typów WordPressa (szablony, media, bloki).`;
+
+  showInfo(`✅ <strong>Wykryto ${detectedTypes.length} typów treści</strong> na ${domain}. Zaznacz które chcesz zebrać i kliknij „Zbierz URL-e".`, true);
+  document.getElementById('types-panel').style.display = 'block';
+  document.getElementById('btn-detect').disabled = false;
+  setStep(3);
+}
+
+function toggleAll(state) {
+  document.querySelectorAll('#types-grid input[type=checkbox]').forEach(cb => cb.checked = state);
+}
+
+// ── STEP 2: Scrape ─────────────────────────────────────────────────────
 async function fetchAllPages(base, endpoint) {
   const items = [];
   let page = 1;
   while (true) {
     const url = `${base}/wp-json/wp/v2/${endpoint}?per_page=100&page=${page}&_fields=id,slug,link,status,title,type`;
     let resp;
-    try {
-      resp = await fetch(url);
-    } catch(e) {
-      log(`  ✗ Błąd sieci dla ${endpoint} strona ${page}: ${e.message}`, 'log-err');
-      break;
-    }
+    try { resp = await fetch(url); }
+    catch(e) { log(`  ✗ Błąd sieci (${endpoint}, strona ${page}): ${e.message}`, 'log-err'); break; }
+
     if (resp.status === 400 || resp.status === 404) break;
-    if (!resp.ok) {
-      log(`  ✗ HTTP ${resp.status} dla ${endpoint}`, 'log-err');
-      break;
-    }
-    const total = parseInt(resp.headers.get('X-WP-TotalPages') || '1');
+    if (!resp.ok) { log(`  ✗ HTTP ${resp.status} dla /${endpoint}`, 'log-err'); break; }
+
+    const totalPages = parseInt(resp.headers.get('X-WP-TotalPages') || '1');
+    const totalItems = parseInt(resp.headers.get('X-WP-Total') || '0');
+
     let data;
     try { data = await resp.json(); } catch(e) { break; }
     if (!data || data.length === 0) break;
+
     items.push(...data);
-    log(`  ✓ ${endpoint} – strona ${page}/${total} (${data.length} rekordów)`, 'log-ok');
-    if (page >= total) break;
+    log(`  ✓ Strona ${page}/${totalPages} — pobrano ${data.length} z ${totalItems} rekordów`, 'log-ok');
+    if (page >= totalPages) break;
     page++;
   }
   return items;
 }
 
 async function startScraping() {
-  const domain = document.getElementById('domain').value.replace(/\/$/, '');
-  if (!domain) { alert('Wpisz domenę!'); return; }
+  const domain = document.getElementById('domain').value.trim().replace(/\/$/, '');
+  const checked = [...document.querySelectorAll('#types-grid input:checked')].map(x => x.value);
+  const selected = detectedTypes.filter(t => checked.includes(t.slug));
+
+  if (selected.length === 0) { alert('Zaznacz przynajmniej jeden typ treści!'); return; }
 
   allResults = [];
   document.getElementById('results-body').innerHTML = '';
-  document.getElementById('log-box').innerHTML = '';
-  document.getElementById('log-box').style.display = 'block';
+  clearLog();
   document.getElementById('stats').style.display = 'none';
   document.getElementById('table-wrap').style.display = 'none';
   document.getElementById('actions').style.display = 'none';
   document.getElementById('btn-run').disabled = true;
-
-  const checked = [...document.querySelectorAll('#types-grid input:checked')].map(x => x.value);
-  const selectedTypes = TYPES.filter(t => checked.includes(t.slug));
-
-  log(`🔍 Start scrapowania: ${domain}`, '');
+  document.getElementById('btn-detect').disabled = true;
+  showInfo('', false);
   setProgress(2);
 
+  log(`🔍 Start: ${domain}`, 'log-info');
+  log(`📋 Typy do zebrania: ${selected.map(t=>t.label).join(', ')}`, 'log-info');
+
+  // Reset badges
+  detectedTypes.forEach(t => {
+    const b = document.getElementById('badge-' + t.slug);
+    if (b) b.textContent = '–';
+    const w = document.getElementById('chk-wrap-' + t.slug);
+    if (w) w.classList.remove('done');
+  });
+
   let idx = 0;
-  for (const t of selectedTypes) {
-    log(`\n→ Pobieranie: ${t.label}`, '');
+  for (const t of selected) {
+    log(`\n→ ${t.label} (/${t.endpoint})`, 'log-info');
     const items = await fetchAllPages(domain, t.endpoint);
-    log(`  Zebrano: ${items.length} rekordów`, items.length > 0 ? 'log-ok' : 'log-warn');
+    log(`  Razem: ${items.length} rekordów`, items.length > 0 ? 'log-ok' : 'log-warn');
 
     const badge = document.getElementById('badge-' + t.slug);
     if (badge) { badge.textContent = items.length; }
-    const chk = document.getElementById('chk-' + t.slug);
-    if (chk && items.length > 0) chk.classList.add('done');
+    if (items.length > 0) {
+      const wrap = document.getElementById('chk-wrap-' + t.slug);
+      if (wrap) wrap.classList.add('done');
+    }
 
     allResults.push(...items.map(item => ({
       id: item.id,
       type: t.endpoint,
-      title: (item.title && item.title.rendered) ? item.title.rendered.replace(/&amp;/g,'&').replace(/&#8211;/g,'–') : '',
+      typeLabel: t.label,
+      title: item.title?.rendered
+        ? item.title.rendered.replace(/<[^>]+>/g,'').replace(/&amp;/g,'&').replace(/&#8211;/g,'–').replace(/&nbsp;/g,' ')
+        : '',
       link: item.link || '',
       slug: item.slug || '',
       status: item.status || '',
     })));
 
     idx++;
-    setProgress(Math.round((idx / selectedTypes.length) * 100));
+    setProgress(Math.round((idx / selected.length) * 100));
   }
 
   setProgress(100);
   log(`\n✅ Gotowe! Zebrano łącznie ${allResults.length} URL-i.`, 'log-ok');
 
   renderTable();
-  renderStats();
+  renderStats(selected);
   document.getElementById('btn-run').disabled = false;
+  document.getElementById('btn-detect').disabled = false;
+  showInfo(`✅ <strong>Zebrano ${allResults.length} URL-i</strong> z ${selected.length} typów treści. Pobierz plik CSV poniżej.`, true);
+  setStep(4);
+}
+
+function renderStats(selected) {
+  const container = document.getElementById('stats');
+  container.innerHTML = '';
+
+  const totalCard = document.createElement('div');
+  totalCard.className = 'stat-card';
+  totalCard.innerHTML = `<div class="num">${allResults.length}</div><div class="lbl">Wszystkich URL</div>`;
+  container.appendChild(totalCard);
+
+  selected.forEach(t => {
+    const count = allResults.filter(r => r.type === t.endpoint).length;
+    const card = document.createElement('div');
+    card.className = 'stat-card';
+    card.innerHTML = `<div class="num">${count}</div><div class="lbl">${t.label}</div>`;
+    container.appendChild(card);
+  });
+
+  container.style.display = 'flex';
 }
 
 function renderTable() {
@@ -377,13 +559,13 @@ function renderTable() {
   allResults.forEach((row, i) => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td>${i+1}</td>
-      <td>${row.id}</td>
+      <td style="color:var(--sempai-muted);font-size:11px">${i+1}</td>
+      <td><strong>${row.id}</strong></td>
       <td><span class="type-pill">${row.type}</span></td>
       <td>${row.title}</td>
       <td><a href="${row.link}" target="_blank" style="color:var(--sempai-green)">${row.link}</a></td>
-      <td>${row.slug}</td>
-      <td>${row.status}</td>
+      <td style="color:var(--sempai-muted)">${row.slug}</td>
+      <td style="color:var(--sempai-muted)">${row.status}</td>
     `;
     tbody.appendChild(tr);
   });
@@ -391,23 +573,12 @@ function renderTable() {
   document.getElementById('actions').style.display = 'flex';
 }
 
-function renderStats() {
-  const total = allResults.length;
-  const pages = allResults.filter(r => r.type === 'pages').length;
-  const products = allResults.filter(r => r.type === 'product').length;
-  const other = total - pages - products;
-  document.getElementById('s-total').textContent = total;
-  document.getElementById('s-pages').textContent = pages;
-  document.getElementById('s-products').textContent = products;
-  document.getElementById('s-other').textContent = other;
-  document.getElementById('stats').style.display = 'flex';
-}
-
 function buildCSV() {
-  const header = ['ID','Typ','Tytuł','URL','Slug','Status'];
+  const header = ['ID','Typ (endpoint)','Typ (nazwa)','Tytuł','Obecny URL','Slug','Status'];
   const rows = allResults.map(r => [
     r.id,
     r.type,
+    r.typeLabel,
     `"${r.title.replace(/"/g,'""')}"`,
     r.link,
     r.slug,
@@ -416,17 +587,25 @@ function buildCSV() {
   return [header.join(','), ...rows].join('\n');
 }
 
+function getFilename() {
+  const domain = document.getElementById('domain').value.trim()
+    .replace(/https?:\/\//,'').replace(/\//g,'').replace(/\./g,'_');
+  return `${domain}_url_structure.csv`;
+}
+
 function downloadCSV() {
-  const csv = '\uFEFF' + buildCSV(); // BOM dla Excela
+  const csv = '\uFEFF' + buildCSV();
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'clicky_pl_url_structure.csv';
+  a.download = getFilename();
   a.click();
 }
 
 function copyCSV() {
-  navigator.clipboard.writeText(buildCSV()).then(() => alert('CSV skopiowany do schowka!'));
+  navigator.clipboard.writeText(buildCSV())
+    .then(() => alert('✅ CSV skopiowany do schowka!'))
+    .catch(() => alert('Nie udało się skopiować — spróbuj przycisku Pobierz CSV.'));
 }
 </script>
 </body>
