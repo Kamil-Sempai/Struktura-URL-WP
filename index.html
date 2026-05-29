@@ -5,588 +5,730 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WordPress URL Scraper – Sempai SEO</title>
 <style>
-  :root {
-    --sempai-dark:   #151b3a;
-    --sempai-green:  #3da546;
-    --sempai-green2: #41ad49;
-    --sempai-muted:  #607086;
-    --sempai-border: #cfd4db;
-    --font-main: Arial, sans-serif;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: var(--font-main); background: #f4f6f8; color: var(--sempai-dark); min-height: 100vh; padding: 32px 16px; }
-  .wrapper { max-width: 960px; margin: 0 auto; }
+:root {
+  --dark:#151b3a; --green:#3da546; --green2:#41ad49;
+  --muted:#607086; --border:#cfd4db; --bg:#f4f6f8;
+  --font:Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--dark);min-height:100vh;padding:32px 16px}
+.wrap{max-width:980px;margin:0 auto}
 
-  header {
-    background: var(--sempai-dark); color: white; border-radius: 8px 8px 0 0;
-    padding: 24px 28px; display: flex; align-items: center; gap: 14px;
-  }
-  .logo-dot {
-    width: 38px; height: 38px; background: var(--sempai-green); border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 700; font-size: 19px; color: white; flex-shrink: 0;
-  }
-  header h1 { font-size: 20px; font-weight: 700; }
-  header p  { font-size: 13px; color: #9ba8bf; margin-top: 2px; }
+/* Header */
+header{background:var(--dark);color:#fff;border-radius:8px 8px 0 0;padding:22px 28px;display:flex;align-items:center;gap:14px}
+.logo{width:38px;height:38px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:19px;color:#fff;flex-shrink:0}
+header h1{font-size:20px;font-weight:700}
+header p{font-size:13px;color:#9ba8bf;margin-top:2px}
 
-  .body-card {
-    background: white; border: 1px solid var(--sempai-border);
-    border-top: none; border-radius: 0 0 8px 8px; padding: 28px;
-  }
+/* Card */
+.card{background:#fff;border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;padding:28px}
 
-  .steps {
-    display: flex; margin-bottom: 24px; border: 1px solid var(--sempai-border);
-    border-radius: 6px; overflow: hidden;
-  }
-  .step {
-    flex: 1; text-align: center; padding: 10px 6px; font-size: 12px;
-    color: var(--sempai-muted); border-right: 1px solid var(--sempai-border);
-  }
-  .step:last-child { border-right: none; }
-  .step .snum {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 20px; height: 20px; border-radius: 50%; background: var(--sempai-border);
-    color: var(--sempai-muted); font-weight: 700; font-size: 11px; margin-right: 5px;
-  }
-  .step.active { background: #f0faf0; color: var(--sempai-dark); }
-  .step.active .snum { background: var(--sempai-green); color: white; }
-  .step.done { color: var(--sempai-green); }
-  .step.done .snum { background: var(--sempai-green); color: white; }
+/* Steps */
+.steps{display:flex;margin-bottom:26px;border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.step{flex:1;text-align:center;padding:10px 6px;font-size:12px;color:var(--muted);border-right:1px solid var(--border)}
+.step:last-child{border-right:none}
+.snum{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--border);color:var(--muted);font-weight:700;font-size:11px;margin-right:5px}
+.step.active{background:#f0faf0;color:var(--dark)}
+.step.active .snum{background:var(--green);color:#fff}
+.step.done{color:var(--green)}
+.step.done .snum{background:var(--green);color:#fff}
 
-  .section-label {
-    font-size: 11px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: .06em; color: var(--sempai-muted); margin-bottom: 10px;
-  }
-  .section-header {
-    display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap;
-  }
-  .section-header .section-label { margin-bottom: 0; }
-  .section-badge {
-    background: var(--sempai-dark); color: white; border-radius: 10px;
-    font-size: 11px; font-weight: 700; padding: 2px 9px;
-  }
-  .section-badge.green { background: var(--sempai-green); }
+/* Labels */
+.slabel{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:10px}
 
-  .field-row { display: flex; gap: 10px; margin-bottom: 20px; align-items: center; flex-wrap: wrap; }
-  .field-row input {
-    flex: 1; min-width: 220px; border: 1px solid var(--sempai-border);
-    border-radius: 4px; padding: 10px 14px; font-family: var(--font-main);
-    font-size: 14px; color: var(--sempai-dark); outline: none; transition: border-color .15s;
-  }
-  .field-row input:focus { border-color: var(--sempai-green); }
+/* Field row */
+.frow{display:flex;gap:10px;margin-bottom:20px;align-items:center;flex-wrap:wrap}
+.frow input{flex:1;min-width:220px;border:1px solid var(--border);border-radius:4px;padding:10px 14px;font-family:var(--font);font-size:14px;color:var(--dark);outline:none;transition:border-color .15s}
+.frow input:focus{border-color:var(--green)}
 
-  .btn {
-    background: var(--sempai-green); color: white; border: none; border-radius: 4px;
-    padding: 11px 22px; font-family: var(--font-main); font-size: 14px;
-    font-weight: 700; cursor: pointer; transition: background .15s; white-space: nowrap;
-  }
-  .btn:hover:not(:disabled) { background: var(--sempai-green2); }
-  .btn:disabled { background: var(--sempai-border); color: var(--sempai-muted); cursor: not-allowed; }
-  .btn-outline {
-    background: white; color: var(--sempai-green); border: 2px solid var(--sempai-green);
-  }
-  .btn-outline:hover:not(:disabled) { background: #f0faf0; }
-  .btn-sm { padding: 7px 14px; font-size: 13px; }
+/* Buttons */
+.btn{background:var(--green);color:#fff;border:none;border-radius:4px;padding:11px 22px;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:background .15s;white-space:nowrap}
+.btn:hover:not(:disabled){background:var(--green2)}
+.btn:disabled{background:var(--border);color:var(--muted);cursor:not-allowed}
+.btn-o{background:#fff;color:var(--green);border:2px solid var(--green)}
+.btn-o:hover:not(:disabled){background:#f0faf0}
+.btn-sm{padding:7px 14px;font-size:13px}
 
-  .types-toolbar { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
-  .types-toolbar span { font-size: 13px; color: var(--sempai-muted); margin-right: auto; }
+/* Info box */
+.info{border-radius:4px;padding:12px 16px;font-size:13px;margin-bottom:20px;display:none}
+.info.ok{background:#f0faf0;border:1px solid #b2deb6}
+.info.err{background:#fff5f5;border:1px solid #f5b8b8}
+.info.warn{background:#fffbf0;border:1px solid #f5dfa0}
 
-  .types-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); gap: 8px;
-  }
-  .type-check {
-    display: flex; align-items: center; gap: 8px; border: 1px solid var(--sempai-border);
-    border-radius: 4px; padding: 9px 12px; cursor: pointer;
-    transition: border-color .15s, background .15s; font-size: 13px; user-select: none;
-  }
-  .type-check:hover { border-color: var(--sempai-green); background: #f0faf0; }
-  .type-check.tax { border-style: dashed; }
-  .type-check input[type=checkbox] { accent-color: var(--sempai-green); width: 15px; height: 15px; cursor: pointer; flex-shrink:0; }
-  .type-check .badge {
-    margin-left: auto; background: var(--sempai-border); color: var(--sempai-muted);
-    border-radius: 10px; font-size: 11px; padding: 1px 7px; min-width: 24px; text-align: center;
-  }
-  .type-check.done .badge { background: var(--sempai-green); color: white; }
-  .endpoint-label { color: var(--sempai-muted); font-size: 11px; display: block; }
+/* Plugin badge */
+.plugin-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:12px;font-size:12px;font-weight:700;margin-bottom:16px;display:none}
+.plugin-badge.found{background:#e8f5e9;color:var(--green);border:1px solid #b2deb6}
+.plugin-badge.none{background:#f5f5f5;color:var(--muted);border:1px solid var(--border)}
 
-  .divider { border: none; border-top: 1px solid var(--sempai-border); margin: 22px 0; }
-  .system-note { margin-top: 8px; font-size: 12px; color: var(--sempai-muted); }
+/* Grid for checkboxes */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px;margin-bottom:12px}
+.chk-wrap{display:flex;align-items:center;gap:8px;border:1px solid var(--border);border-radius:4px;padding:9px 12px;cursor:pointer;transition:border-color .15s,background .15s;font-size:13px;user-select:none}
+.chk-wrap:hover{border-color:var(--green);background:#f0faf0}
+.chk-wrap.dashed{border-style:dashed}
+.chk-wrap input[type=checkbox]{accent-color:var(--green);width:15px;height:15px;cursor:pointer;flex-shrink:0}
+.chk-wrap .badge{margin-left:auto;background:var(--border);color:var(--muted);border-radius:10px;font-size:11px;padding:1px 7px;min-width:24px;text-align:center}
+.chk-wrap.done .badge{background:var(--green);color:#fff}
+.ep{color:var(--muted);font-size:11px;display:block}
 
-  #progress-bar-wrap {
-    background: var(--sempai-border); border-radius: 4px; height: 6px;
-    margin-bottom: 16px; display: none; overflow: hidden;
-  }
-  #progress-bar { height: 6px; background: var(--sempai-green); width: 0%; transition: width .4s; border-radius: 4px; }
+/* Fields selector */
+.fields-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-bottom:16px}
+.field-item{display:flex;align-items:flex-start;gap:10px;border:1px solid var(--border);border-radius:4px;padding:10px 12px;cursor:pointer;transition:border-color .15s,background .15s;user-select:none}
+.field-item:hover{border-color:var(--green);background:#f0faf0}
+.field-item input{accent-color:var(--green);width:15px;height:15px;cursor:pointer;flex-shrink:0;margin-top:2px}
+.field-item .fi-label{font-size:13px;font-weight:700;color:var(--dark)}
+.field-item .fi-desc{font-size:11px;color:var(--muted);margin-top:2px}
+.field-item.slow-field{border-color:#f5dfa0;background:#fffef8}
+.field-item.slow-field:hover{border-color:#e0b800;background:#fffbf0}
+.slow-tag{display:inline-block;background:#fff3cd;color:#856404;border-radius:8px;font-size:10px;font-weight:700;padding:1px 6px;margin-left:4px}
 
-  #log-box {
-    background: #f7f9fb; border: 1px solid var(--sempai-border); border-radius: 4px;
-    padding: 14px 16px; font-size: 13px; line-height: 1.75; min-height: 48px;
-    max-height: 200px; overflow-y: auto; display: none; margin-bottom: 16px; font-family: monospace;
-  }
-  .log-ok   { color: var(--sempai-green); }
-  .log-warn { color: #c07000; }
-  .log-err  { color: #c0392b; }
-  .log-info { color: var(--sempai-muted); }
+/* Divider */
+.div{border:none;border-top:1px solid var(--border);margin:22px 0}
 
-  .info-box {
-    background: #f0faf0; border: 1px solid #b2deb6; border-radius: 4px;
-    padding: 12px 16px; font-size: 13px; color: var(--sempai-dark);
-    margin-bottom: 20px; display: none;
-  }
+/* Progress */
+#prog-wrap{background:var(--border);border-radius:4px;height:8px;margin-bottom:8px;display:none;overflow:hidden}
+#prog-bar{height:8px;background:var(--green);width:0%;transition:width .4s;border-radius:4px}
+#prog-label{font-size:12px;color:var(--muted);margin-bottom:12px;display:none}
 
-  #stats { display: none; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-  .stat-card {
-    flex: 1; min-width: 100px; border: 1px solid var(--sempai-border);
-    border-radius: 6px; padding: 12px 16px; text-align: center;
-  }
-  .stat-card .num { font-size: 28px; font-weight: 700; color: var(--sempai-dark); line-height: 1; }
-  .stat-card .lbl { font-size: 12px; color: var(--sempai-muted); margin-top: 4px; }
+/* Log */
+#log{background:#f7f9fb;border:1px solid var(--border);border-radius:4px;padding:12px 16px;font-size:12px;line-height:1.75;max-height:180px;overflow-y:auto;display:none;margin-bottom:14px;font-family:monospace}
+.lok{color:var(--green)}.lwarn{color:#c07000}.lerr{color:#c0392b}.linfo{color:var(--muted)}
 
-  #table-wrap { display: none; overflow-x: auto; margin-bottom: 16px; border: 1px solid var(--sempai-border); border-radius: 4px; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  thead tr { background: var(--sempai-dark); color: white; }
-  thead th { padding: 10px 12px; text-align: left; font-weight: 700; white-space: nowrap; }
-  tbody tr:nth-child(even) { background: #f7f9fb; }
-  tbody tr:hover { background: #eef8ee; }
-  tbody td { padding: 7px 12px; border-bottom: 1px solid var(--sempai-border); word-break: break-all; }
-  .type-pill {
-    display: inline-block; padding: 2px 9px; border-radius: 10px;
-    font-size: 11px; font-weight: 700; white-space: nowrap;
-  }
-  .pill-post { background: var(--sempai-dark); color: white; }
-  .pill-tax  { background: #e8f5e9; color: var(--sempai-green); border: 1px solid #b2deb6; }
+/* Stats */
+#stats{display:none;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.stat{flex:1;min-width:90px;border:1px solid var(--border);border-radius:6px;padding:10px 14px;text-align:center}
+.stat .n{font-size:26px;font-weight:700;line-height:1}
+.stat .l{font-size:11px;color:var(--muted);margin-top:4px}
 
-  #actions { display: none; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+/* Table */
+#tbl-wrap{display:none;overflow-x:auto;margin-bottom:14px;border:1px solid var(--border);border-radius:4px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead tr{background:var(--dark);color:#fff}
+thead th{padding:9px 10px;text-align:left;font-weight:700;white-space:nowrap}
+tbody tr:nth-child(even){background:#f7f9fb}
+tbody tr:hover{background:#eef8ee}
+tbody td{padding:6px 10px;border-bottom:1px solid var(--border);word-break:break-all;max-width:260px}
+.pill{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;white-space:nowrap}
+.pill-pt{background:var(--dark);color:#fff}
+.pill-tax{background:#e8f5e9;color:var(--green);border:1px solid #b2deb6}
+.loading-cell{color:var(--muted);font-style:italic;font-size:11px}
+.toolbar{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.toolbar span{font-size:13px;color:var(--muted);margin-right:auto}
+#actions{display:none;gap:10px;flex-wrap:wrap;margin-top:4px}
+.note{font-size:12px;color:var(--muted);margin-top:8px}
 </style>
 </head>
 <body>
-<div class="wrapper">
-  <header>
-    <div class="logo-dot">S</div>
-    <div>
-      <h1>WordPress URL Scraper <span style="font-weight:400;opacity:.7;font-size:15px;">+ WooCommerce kategorie</span></h1>
-      <p>Automatyczne wykrywanie typów treści i taksonomii (kategorie, tagi) | Sempai SEO Tools</p>
-    </div>
-  </header>
-
-  <div class="body-card">
-
-    <div class="steps">
-      <div class="step active" id="step1"><span class="snum">1</span>Wpisz domenę</div>
-      <div class="step" id="step2"><span class="snum">2</span>Wykryj typy i kategorie</div>
-      <div class="step" id="step3"><span class="snum">3</span>Zbierz URL-e</div>
-      <div class="step" id="step4"><span class="snum">4</span>Pobierz CSV</div>
-    </div>
-
-    <div class="section-label">Adres strony WordPress</div>
-    <div class="field-row">
-      <input type="text" id="domain" placeholder="https://domena.pl">
-      <button class="btn" id="btn-detect" onclick="detectAll()">🔍 Wykryj typy treści i kategorie</button>
-    </div>
-
-    <div class="info-box" id="info-box"></div>
-
-    <!-- Panel typów i taksonomii -->
-    <div id="types-panel" style="display:none">
-
-      <!-- Post types -->
-      <div class="section-header">
-        <span class="section-label">Typy treści (posty, strony, produkty...)</span>
-        <span class="section-badge" id="pt-count-badge">0</span>
-      </div>
-      <div class="types-toolbar">
-        <span id="pt-count-label"></span>
-        <button class="btn btn-outline btn-sm" onclick="toggleGroup('pt', true)">Zaznacz</button>
-        <button class="btn btn-outline btn-sm" onclick="toggleGroup('pt', false)">Odznacz</button>
-      </div>
-      <div class="types-grid" id="pt-grid"></div>
-
-      <hr class="divider">
-
-      <!-- Taxonomies -->
-      <div class="section-header">
-        <span class="section-label">Taksonomie (kategorie, tagi, atrybuty...)</span>
-        <span class="section-badge green" id="tax-count-badge">0</span>
-      </div>
-      <div class="types-toolbar">
-        <span id="tax-count-label"></span>
-        <button class="btn btn-outline btn-sm" onclick="toggleGroup('tax', true)">Zaznacz</button>
-        <button class="btn btn-outline btn-sm" onclick="toggleGroup('tax', false)">Odznacz</button>
-      </div>
-      <div class="types-grid" id="tax-grid"></div>
-      <p class="system-note" id="system-note"></p>
-
-      <hr class="divider">
-      <button class="btn" id="btn-run" onclick="startScraping()">▶ Zbierz wszystkie URL-e</button>
-    </div>
-
-    <div id="progress-bar-wrap"><div id="progress-bar"></div></div>
-    <div id="log-box"></div>
-    <div id="stats"></div>
-
-    <div id="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>#</th><th>ID</th><th>Kategoria</th><th>Typ</th>
-            <th>Tytuł / Nazwa</th><th>Obecny URL</th><th>Slug</th><th>Liczba wpisów</th>
-          </tr>
-        </thead>
-        <tbody id="results-body"></tbody>
-      </table>
-    </div>
-
-    <div id="actions">
-      <button class="btn" onclick="downloadCSV()">⬇ Pobierz CSV</button>
-      <button class="btn btn-outline" onclick="copyCSV()">📋 Kopiuj CSV</button>
-    </div>
-
+<div class="wrap">
+<header>
+  <div class="logo">S</div>
+  <div>
+    <h1>WordPress URL Scraper</h1>
+    <p>Typy treści · Taksonomie · Meta SEO · H1 | Sempai SEO Tools</p>
   </div>
-</div>
+</header>
+<div class="card">
+
+  <!-- Steps -->
+  <div class="steps">
+    <div class="step active" id="step1"><span class="snum">1</span>Domena</div>
+    <div class="step" id="step2"><span class="snum">2</span>Wykryj</div>
+    <div class="step" id="step3"><span class="snum">3</span>Wybierz pola</div>
+    <div class="step" id="step4"><span class="snum">4</span>Zbierz dane</div>
+    <div class="step" id="step5"><span class="snum">5</span>Pobierz CSV</div>
+  </div>
+
+  <!-- STEP 1: Domain -->
+  <div class="slabel">Adres strony WordPress</div>
+  <div class="frow">
+    <input type="text" id="domain" placeholder="https://domena.pl">
+    <button class="btn" id="btn-detect" onclick="detectAll()">🔍 Wykryj zawartość i wtyczkę SEO</button>
+  </div>
+  <div class="info ok" id="info-box"></div>
+
+  <!-- STEP 2: Types + Taxonomies -->
+  <div id="types-panel" style="display:none">
+
+    <div id="plugin-badge" class="plugin-badge"></div>
+
+    <div class="toolbar">
+      <span class="slabel" style="margin:0">Typy treści</span>
+      <button class="btn btn-o btn-sm" onclick="toggleGroup('pt',true)">Zaznacz</button>
+      <button class="btn btn-o btn-sm" onclick="toggleGroup('pt',false)">Odznacz</button>
+    </div>
+    <div class="grid" id="pt-grid"></div>
+
+    <div class="toolbar" style="margin-top:14px">
+      <span class="slabel" style="margin:0">Taksonomie (kategorie, tagi)</span>
+      <button class="btn btn-o btn-sm" onclick="toggleGroup('tax',true)">Zaznacz</button>
+      <button class="btn btn-o btn-sm" onclick="toggleGroup('tax',false)">Odznacz</button>
+    </div>
+    <div class="grid" id="tax-grid"></div>
+    <p class="note" id="sys-note"></p>
+
+    <div class="div"></div>
+
+    <!-- STEP 3: Field selector -->
+    <div class="slabel">Wybierz pola które chcesz wyciągnąć</div>
+    <div class="fields-grid" id="fields-grid"></div>
+    <p class="note" id="slow-note" style="display:none">⚠️ Pola oznaczone <span style="background:#fff3cd;color:#856404;border-radius:8px;font-size:10px;font-weight:700;padding:1px 6px">WOLNE</span> wymagają osobnego requestu HTTP dla każdego URL-a — znacznie wydłuża to czas działania przy dużych serwisach.</p>
+
+    <div class="div"></div>
+    <button class="btn" id="btn-run" onclick="startScraping()">▶ Zbierz dane</button>
+  </div>
+
+  <!-- Progress -->
+  <div id="prog-wrap"><div id="prog-bar"></div></div>
+  <div id="prog-label"></div>
+  <div id="log"></div>
+  <div id="stats"></div>
+  <div id="tbl-wrap"><table><thead id="tbl-head"></thead><tbody id="tbl-body"></tbody></table></div>
+  <div id="actions">
+    <button class="btn" onclick="downloadCSV()">⬇ Pobierz CSV</button>
+    <button class="btn btn-o" onclick="copyCSV()">📋 Kopiuj CSV</button>
+  </div>
+
+</div><!-- /card -->
+</div><!-- /wrap -->
 
 <script>
-const SYSTEM_PT  = new Set(['attachment','nav_menu_item','wp_block','wp_template','wp_template_part','wp_navigation','revision','customize_changeset','custom_css','oembed_cache','user_request','wp_global_styles']);
-const SYSTEM_TAX = new Set(['nav_menu','link_category','post_format']);
+// ─── Constants ────────────────────────────────────────────────────────────────
+const SYS_PT  = new Set(['attachment','nav_menu_item','wp_block','wp_template','wp_template_part','wp_navigation','revision','customize_changeset','custom_css','oembed_cache','user_request','wp_global_styles']);
+const SYS_TAX = new Set(['nav_menu','link_category','post_format']);
+const PROXY   = 'https://api.allorigins.win/get?url=';
+const CONCURRENCY = 4; // parallel H1 requests
 
-let postTypes   = [];  // { slug, label, endpoint }
-let taxonomies  = [];  // { slug, label, endpoint }
-let allResults  = [];
+// All available fields definition
+const FIELD_DEFS = [
+  { id:'f_id',     label:'ID',               desc:'Unikalny numer wpisu w WP',           slow:false, alwaysOn:false },
+  { id:'f_url',    label:'URL',               desc:'Pełny adres strony',                  slow:false, alwaysOn:true  },
+  { id:'f_slug',   label:'Slug',              desc:'Końcówka adresu URL',                 slow:false, alwaysOn:false },
+  { id:'f_type',   label:'Typ treści',        desc:'Endpoint z WP REST API',              slow:false, alwaysOn:false },
+  { id:'f_status', label:'Status',            desc:'publish / draft / private',           slow:false, alwaysOn:false },
+  { id:'f_count',  label:'Liczba wpisów',     desc:'Tylko dla kategorii/tagów',           slow:false, alwaysOn:false },
+  { id:'f_title',  label:'Meta Title',        desc:'Z wtyczki SEO (Yoast/RankMath/inne)', slow:false, alwaysOn:false },
+  { id:'f_desc',   label:'Meta Description',  desc:'Z wtyczki SEO',                       slow:false, alwaysOn:false },
+  { id:'f_h1',     label:'H1',                desc:'Prawdziwy H1 pobrany ze strony',      slow:true,  alwaysOn:false },
+];
 
-function setStep(n) {
-  for (let i = 1; i <= 4; i++) {
-    const el = document.getElementById('step' + i);
+// ─── State ────────────────────────────────────────────────────────────────────
+let postTypes  = [];
+let taxonomies = [];
+let allResults = [];
+let detectedPlugin = 'none';
+
+// ─── UI helpers ───────────────────────────────────────────────────────────────
+function setStep(n){
+  for(let i=1;i<=5;i++){
+    const el=document.getElementById('step'+i);
     el.classList.remove('active','done');
-    if (i < n) el.classList.add('done');
-    else if (i === n) el.classList.add('active');
+    if(i<n)el.classList.add('done');
+    else if(i===n)el.classList.add('active');
   }
 }
+function log(msg,cls=''){
+  const b=document.getElementById('log');
+  b.style.display='block';
+  const d=document.createElement('div');
+  if(cls)d.className=cls;
+  d.textContent=msg;
+  b.appendChild(d);
+  b.scrollTop=b.scrollHeight;
+}
+function clearLog(){const b=document.getElementById('log');b.innerHTML='';b.style.display='none'}
+function setProgress(pct,label=''){
+  document.getElementById('prog-wrap').style.display='block';
+  document.getElementById('prog-bar').style.width=pct+'%';
+  const lbl=document.getElementById('prog-label');
+  lbl.style.display='block';
+  lbl.textContent=label;
+}
+function showInfo(html,type='ok'){
+  const el=document.getElementById('info-box');
+  el.className='info '+type;
+  el.innerHTML=html;
+  el.style.display='block';
+}
+function hideInfo(){document.getElementById('info-box').style.display='none'}
+function cleanText(t){
+  return (t||'').replace(/<[^>]+>/g,'')
+    .replace(/&amp;/g,'&').replace(/&#8211;/g,'–').replace(/&nbsp;/g,' ')
+    .replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(n)).trim();
+}
 
-function log(msg, cls='') {
-  const box = document.getElementById('log-box');
-  box.style.display = 'block';
-  const d = document.createElement('div');
-  if (cls) d.className = cls;
-  d.textContent = msg;
-  box.appendChild(d);
-  box.scrollTop = box.scrollHeight;
-}
-function clearLog() {
-  const b = document.getElementById('log-box');
-  b.innerHTML = ''; b.style.display = 'none';
-}
-function setProgress(p) {
-  document.getElementById('progress-bar-wrap').style.display = 'block';
-  document.getElementById('progress-bar').style.width = p + '%';
-}
-function showInfo(html, show=true) {
-  const el = document.getElementById('info-box');
-  el.innerHTML = html;
-  el.style.display = show ? 'block' : 'none';
+// ─── Field builder ────────────────────────────────────────────────────────────
+function buildFieldsGrid(){
+  const grid=document.getElementById('fields-grid');
+  grid.innerHTML='';
+  FIELD_DEFS.forEach(f=>{
+    const lbl=document.createElement('label');
+    lbl.className='field-item'+(f.slow?' slow-field':'');
+    lbl.innerHTML=`
+      <input type="checkbox" id="${f.id}" ${f.alwaysOn?'checked disabled':'checked'}>
+      <div>
+        <div class="fi-label">${f.label}${f.slow?'<span class="slow-tag">WOLNE</span>':''}</div>
+        <div class="fi-desc">${f.desc}</div>
+      </div>`;
+    grid.appendChild(lbl);
+    // Show slow note if any slow field exists
+    if(f.slow) document.getElementById('slow-note').style.display='block';
+  });
+  // When h1 toggled, show/hide slow note
+  document.getElementById('f_h1').addEventListener('change',()=>{
+    const anySlowChecked=[...document.querySelectorAll('.slow-field input:checked')].length>0;
+    document.getElementById('slow-note').style.display=anySlowChecked?'block':'none';
+  });
 }
 
-function buildCheckbox(t, group, isTax=false) {
-  const lbl = document.createElement('label');
-  lbl.className = 'type-check' + (isTax ? ' tax' : '');
-  lbl.id = `chk-wrap-${group}-${t.slug}`;
-  lbl.innerHTML = `
-    <input type="checkbox" data-group="${group}" value="${t.slug}" checked>
-    <span>
-      ${t.label}
-      <small class="endpoint-label">/${t.endpoint}</small>
-    </span>
-    <span class="badge" id="badge-${group}-${t.slug}">–</span>
-  `;
+// ─── Checkbox helpers ─────────────────────────────────────────────────────────
+function buildCheckbox(t,group,dashed=false){
+  const lbl=document.createElement('label');
+  lbl.className='chk-wrap'+(dashed?' dashed':'');
+  lbl.id=`cw-${group}-${t.slug}`;
+  lbl.innerHTML=`<input type="checkbox" data-group="${group}" value="${t.slug}" checked>
+    <span>${t.label}<small class="ep">/${t.endpoint}</small></span>
+    <span class="badge" id="badge-${group}-${t.slug}">–</span>`;
   return lbl;
 }
+function toggleGroup(group,state){
+  document.querySelectorAll(`input[data-group="${group}"]`).forEach(cb=>cb.checked=state);
+}
 
-// ── DETECT ────────────────────────────────────────────────────────────
-async function detectAll() {
-  const domain = document.getElementById('domain').value.trim().replace(/\/$/, '');
-  if (!domain) { alert('Wpisz adres strony!'); return; }
+// ─── SEO plugin detection ─────────────────────────────────────────────────────
+async function detectSeoPlugin(domain){
+  // Fetch one sample post or page
+  for(const ep of ['posts','pages']){
+    try{
+      const r=await fetch(`${domain}/wp-json/wp/v2/${ep}?per_page=1&_fields=yoast_head_json,rank_math,rank_math_seo,aioseo_head,_seopress_titles_title`);
+      if(!r.ok) continue;
+      const data=await r.json();
+      if(!data||!data.length) continue;
+      const item=data[0];
+      if(item.yoast_head_json) return 'yoast';
+      if(item.rank_math||item.rank_math_seo) return 'rankmath';
+      if(item.aioseo_head) return 'aioseo';
+      if(item._seopress_titles_title!==undefined) return 'seopress';
+    }catch(e){}
+  }
+  return 'none';
+}
+
+function pluginInfo(plugin){
+  const map={
+    yoast:    {name:'Yoast SEO',   field:'yoast_head_json', color:'#a4262c'},
+    rankmath: {name:'Rank Math',   field:'rank_math_seo',   color:'#009900'},
+    aioseo:   {name:'AIOSEO',      field:'aioseo_head',     color:'#444eb0'},
+    seopress: {name:'SEOPress',    field:'_seopress_...',   color:'#00829b'},
+    none:     {name:'Brak wtyczki SEO', field:null,         color:'#607086'},
+  };
+  return map[plugin]||map.none;
+}
+
+// ─── STEP 2: Detect ───────────────────────────────────────────────────────────
+async function detectAll(){
+  const domain=document.getElementById('domain').value.trim().replace(/\/$/,'');
+  if(!domain){alert('Wpisz adres strony!');return}
 
   clearLog();
-  document.getElementById('types-panel').style.display = 'none';
-  document.getElementById('stats').style.display = 'none';
-  document.getElementById('table-wrap').style.display = 'none';
-  document.getElementById('actions').style.display = 'none';
-  document.getElementById('progress-bar-wrap').style.display = 'none';
-  showInfo('⏳ Łączenie z WordPress REST API...', true);
-  document.getElementById('btn-detect').disabled = true;
+  hideInfo();
+  document.getElementById('types-panel').style.display='none';
+  document.getElementById('stats').style.display='none';
+  document.getElementById('tbl-wrap').style.display='none';
+  document.getElementById('actions').style.display='none';
+  document.getElementById('prog-wrap').style.display='none';
+  document.getElementById('prog-label').style.display='none';
+  document.getElementById('btn-detect').disabled=true;
+  showInfo('⏳ Łączenie z WordPress REST API...','ok');
   setStep(2);
 
-  // Fetch post types
-  let ptData, taxData;
-  try {
-    const [ptResp, taxResp] = await Promise.all([
+  let ptData,taxData;
+  try{
+    const [ptR,taxR]=await Promise.all([
       fetch(`${domain}/wp-json/wp/v2/types`),
       fetch(`${domain}/wp-json/wp/v2/taxonomies`),
     ]);
-    if (!ptResp.ok) throw new Error(`Typy: HTTP ${ptResp.status}`);
-    if (!taxResp.ok) throw new Error(`Taksonomie: HTTP ${taxResp.status}`);
-    ptData  = await ptResp.json();
-    taxData = await taxResp.json();
-  } catch(e) {
-    showInfo(`❌ <strong>Błąd połączenia.</strong> Sprawdź adres i czy REST API jest aktywne.<br><small>${e.message}</small>`, true);
-    document.getElementById('btn-detect').disabled = false;
+    if(!ptR.ok) throw new Error(`Typy: HTTP ${ptR.status}`);
+    if(!taxR.ok) throw new Error(`Taksonomie: HTTP ${taxR.status}`);
+    ptData=await ptR.json();
+    taxData=await taxR.json();
+  }catch(e){
+    showInfo(`❌ <strong>Błąd połączenia.</strong> Sprawdź adres i czy REST API jest aktywne.<br><small>${e.message}</small>`,'err');
+    document.getElementById('btn-detect').disabled=false;
     setStep(1);
     return;
   }
 
+  // Detect SEO plugin
+  showInfo('⏳ Wykrywanie wtyczki SEO...','ok');
+  detectedPlugin=await detectSeoPlugin(domain);
+  const pi=pluginInfo(detectedPlugin);
+
   // Post types
-  postTypes = Object.values(ptData)
-    .filter(t => !SYSTEM_PT.has(t.slug))
-    .map(t => ({ slug: t.slug, label: t.name, endpoint: t.rest_base }));
+  postTypes=Object.values(ptData).filter(t=>!SYS_PT.has(t.slug)).map(t=>({slug:t.slug,label:t.name,endpoint:t.rest_base}));
+  taxonomies=Object.values(taxData).filter(t=>!SYS_TAX.has(t.slug)).map(t=>({slug:t.slug,label:t.name,endpoint:t.rest_base}));
 
-  // Taxonomies
-  taxonomies = Object.values(taxData)
-    .filter(t => !SYSTEM_TAX.has(t.slug))
-    .map(t => ({ slug: t.slug, label: t.name, endpoint: t.rest_base }));
+  const ptSkip=Object.keys(ptData).length-postTypes.length;
+  const taxSkip=Object.keys(taxData).length-taxonomies.length;
 
-  const ptSkipped  = Object.keys(ptData).length  - postTypes.length;
-  const taxSkipped = Object.keys(taxData).length - taxonomies.length;
+  // Build grids
+  const ptGrid=document.getElementById('pt-grid');
+  ptGrid.innerHTML='';
+  postTypes.forEach(t=>ptGrid.appendChild(buildCheckbox(t,'pt',false)));
 
-  // Build PT grid
-  const ptGrid = document.getElementById('pt-grid');
-  ptGrid.innerHTML = '';
-  postTypes.forEach(t => ptGrid.appendChild(buildCheckbox(t, 'pt', false)));
-  document.getElementById('pt-count-badge').textContent = postTypes.length;
-  document.getElementById('pt-count-label').textContent = `${postTypes.length} typów treści`;
+  const taxGrid=document.getElementById('tax-grid');
+  taxGrid.innerHTML='';
+  taxonomies.forEach(t=>taxGrid.appendChild(buildCheckbox(t,'tax',true)));
 
-  // Build Tax grid
-  const taxGrid = document.getElementById('tax-grid');
-  taxGrid.innerHTML = '';
-  taxonomies.forEach(t => taxGrid.appendChild(buildCheckbox(t, 'tax', true)));
-  document.getElementById('tax-count-badge').textContent = taxonomies.length;
-  document.getElementById('tax-count-label').textContent = `${taxonomies.length} taksonomii (w tym kategorie produktów WooCommerce)`;
+  document.getElementById('sys-note').textContent=`Pominięto ${ptSkip} systemowych typów i ${taxSkip} systemowych taksonomii WordPressa.`;
 
-  document.getElementById('system-note').textContent =
-    `Pominięto: ${ptSkipped} systemowych typów i ${taxSkipped} systemowych taksonomii WordPressa.`;
+  // Plugin badge
+  const badge=document.getElementById('plugin-badge');
+  badge.className='plugin-badge '+(detectedPlugin!=='none'?'found':'none');
+  badge.textContent=(detectedPlugin!=='none'?'✓ ':'✗ ')+'Wtyczka SEO: '+pi.name;
+  badge.style.display='inline-flex';
 
-  showInfo(`✅ <strong>Gotowe!</strong> Wykryto ${postTypes.length} typów treści i ${taxonomies.length} taksonomii. Zaznacz co chcesz zebrać i kliknij „Zbierz URL-e".`, true);
-  document.getElementById('types-panel').style.display = 'block';
-  document.getElementById('btn-detect').disabled = false;
+  // Build fields
+  buildFieldsGrid();
+
+  // Disable meta fields if no plugin
+  if(detectedPlugin==='none'){
+    ['f_title','f_desc'].forEach(id=>{
+      const cb=document.getElementById(id);
+      if(cb){cb.checked=false;cb.disabled=true;cb.closest('.field-item').style.opacity='.45';cb.closest('.field-item').title='Brak wtyczki SEO — pole niedostępne';}
+    });
+  }
+
+  showInfo(`✅ Wykryto <strong>${postTypes.length} typów treści</strong> i <strong>${taxonomies.length} taksonomii</strong>. Wtyczka SEO: <strong>${pi.name}</strong>. Zaznacz co chcesz zebrać i wybierz pola.`,'ok');
+  document.getElementById('types-panel').style.display='block';
+  document.getElementById('btn-detect').disabled=false;
   setStep(3);
 }
 
-function toggleGroup(group, state) {
-  document.querySelectorAll(`#types-grid input[data-group="${group}"], #pt-grid input[data-group="${group}"], #tax-grid input[data-group="${group}"]`).forEach(cb => cb.checked = state);
+// ─── Meta extraction ──────────────────────────────────────────────────────────
+function extractMeta(item,plugin){
+  let title='',desc='';
+  try{
+    if(plugin==='yoast'&&item.yoast_head_json){
+      title=item.yoast_head_json.title||'';
+      desc=item.yoast_head_json.description||'';
+    } else if(plugin==='rankmath'){
+      const rm=item.rank_math_seo||item.rank_math||{};
+      title=rm.title||'';
+      desc=rm.description||'';
+    } else if(plugin==='aioseo'&&item.aioseo_head){
+      // parse from HTML snippet
+      const tm=item.aioseo_head.match(/<title>([^<]*)<\/title>/);
+      const dm=item.aioseo_head.match(/name="description"\s+content="([^"]*)"/);
+      title=tm?tm[1]:'';
+      desc=dm?dm[1]:'';
+    } else if(plugin==='seopress'){
+      title=item._seopress_titles_title||'';
+      desc=item._seopress_titles_desc||'';
+    }
+  }catch(e){}
+  return{title:cleanText(title),desc:cleanText(desc)};
 }
 
-// ── FETCH helpers ─────────────────────────────────────────────────────
-async function fetchPostTypePages(base, endpoint) {
-  const items = [];
-  let page = 1;
-  while (true) {
-    const url = `${base}/wp-json/wp/v2/${endpoint}?per_page=100&page=${page}&_fields=id,slug,link,status,title,type`;
+// ─── H1 fetching ──────────────────────────────────────────────────────────────
+async function fetchH1(url){
+  try{
+    const proxy=`${PROXY}${encodeURIComponent(url)}`;
+    const r=await fetch(proxy);
+    if(!r.ok) return '(błąd proxy)';
+    const data=await r.json();
+    const html=data.contents||'';
+    const m=html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
+    if(!m) return '(brak H1)';
+    return cleanText(m[1]);
+  }catch(e){
+    return '(błąd)';
+  }
+}
+
+async function runConcurrent(tasks,concurrency,onDone){
+  let i=0;
+  async function worker(){
+    while(i<tasks.length){
+      const idx=i++;
+      await tasks[idx]();
+      onDone(idx,tasks.length);
+    }
+  }
+  const workers=[];
+  for(let w=0;w<Math.min(concurrency,tasks.length);w++) workers.push(worker());
+  await Promise.all(workers);
+}
+
+// ─── Fetch post type pages ────────────────────────────────────────────────────
+async function fetchPTPages(base,endpoint,plugin,wantMeta){
+  const items=[];
+  let page=1;
+  const fields=['id','slug','link','status','title','type'];
+  if(wantMeta){
+    if(plugin==='yoast')fields.push('yoast_head_json');
+    else if(plugin==='rankmath')fields.push('rank_math_seo','rank_math');
+    else if(plugin==='aioseo')fields.push('aioseo_head');
+    else if(plugin==='seopress')fields.push('_seopress_titles_title','_seopress_titles_desc');
+  }
+  while(true){
+    const url=`${base}/wp-json/wp/v2/${endpoint}?per_page=100&page=${page}&_fields=${fields.join(',')}`;
     let resp;
-    try { resp = await fetch(url); } catch(e) { log(`  ✗ Błąd sieci: ${e.message}`, 'log-err'); break; }
-    if (resp.status === 400 || resp.status === 404) break;
-    if (!resp.ok) { log(`  ✗ HTTP ${resp.status}`, 'log-err'); break; }
-    const totalPages = parseInt(resp.headers.get('X-WP-TotalPages') || '1');
-    const totalItems = parseInt(resp.headers.get('X-WP-Total') || '0');
-    let data; try { data = await resp.json(); } catch(e) { break; }
-    if (!data || data.length === 0) break;
+    try{resp=await fetch(url)}catch(e){log(`  ✗ Błąd sieci: ${e.message}`,'lerr');break}
+    if(resp.status===400||resp.status===404)break;
+    if(!resp.ok){log(`  ✗ HTTP ${resp.status}`,'lerr');break}
+    const totalPages=parseInt(resp.headers.get('X-WP-TotalPages')||'1');
+    const totalItems=parseInt(resp.headers.get('X-WP-Total')||'0');
+    let data;try{data=await resp.json()}catch(e){break}
+    if(!data||!data.length)break;
     items.push(...data);
-    log(`  ✓ Strona ${page}/${totalPages} — ${data.length}/${totalItems} rekordów`, 'log-ok');
-    if (page >= totalPages) break;
+    log(`  ✓ Strona ${page}/${totalPages} — ${data.length}/${totalItems}`,'lok');
+    if(page>=totalPages)break;
     page++;
   }
   return items;
 }
 
-async function fetchTaxonomyPages(base, endpoint) {
-  const items = [];
-  let page = 1;
-  while (true) {
-    const url = `${base}/wp-json/wp/v2/${endpoint}?per_page=100&page=${page}&_fields=id,slug,link,name,count,taxonomy&hide_empty=false`;
+async function fetchTaxPages(base,endpoint){
+  const items=[];
+  let page=1;
+  while(true){
+    const url=`${base}/wp-json/wp/v2/${endpoint}?per_page=100&page=${page}&_fields=id,slug,link,name,count,taxonomy&hide_empty=false`;
     let resp;
-    try { resp = await fetch(url); } catch(e) { log(`  ✗ Błąd sieci: ${e.message}`, 'log-err'); break; }
-    if (resp.status === 400 || resp.status === 404) break;
-    if (!resp.ok) { log(`  ✗ HTTP ${resp.status}`, 'log-err'); break; }
-    const totalPages = parseInt(resp.headers.get('X-WP-TotalPages') || '1');
-    const totalItems = parseInt(resp.headers.get('X-WP-Total') || '0');
-    let data; try { data = await resp.json(); } catch(e) { break; }
-    if (!data || data.length === 0) break;
+    try{resp=await fetch(url)}catch(e){log(`  ✗ Błąd sieci: ${e.message}`,'lerr');break}
+    if(resp.status===400||resp.status===404)break;
+    if(!resp.ok){log(`  ✗ HTTP ${resp.status}`,'lerr');break}
+    const totalPages=parseInt(resp.headers.get('X-WP-TotalPages')||'1');
+    const totalItems=parseInt(resp.headers.get('X-WP-Total')||'0');
+    let data;try{data=await resp.json()}catch(e){break}
+    if(!data||!data.length)break;
     items.push(...data);
-    log(`  ✓ Strona ${page}/${totalPages} — ${data.length}/${totalItems} kategorii`, 'log-ok');
-    if (page >= totalPages) break;
+    log(`  ✓ Strona ${page}/${totalPages} — ${data.length}/${totalItems}`,'lok');
+    if(page>=totalPages)break;
     page++;
   }
   return items;
 }
 
-function cleanTitle(t) {
-  return (t || '').replace(/<[^>]+>/g,'').replace(/&amp;/g,'&').replace(/&#8211;/g,'–').replace(/&nbsp;/g,' ').replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(n));
-}
+// ─── STEP 4: Scrape ───────────────────────────────────────────────────────────
+async function startScraping(){
+  const domain=document.getElementById('domain').value.trim().replace(/\/$/,'');
 
-// ── SCRAPE ────────────────────────────────────────────────────────────
-async function startScraping() {
-  const domain = document.getElementById('domain').value.trim().replace(/\/$/, '');
+  const selPT=postTypes.filter(t=>{const cb=document.querySelector(`#pt-grid input[value="${t.slug}"]`);return cb&&cb.checked});
+  const selTax=taxonomies.filter(t=>{const cb=document.querySelector(`#tax-grid input[value="${t.slug}"]`);return cb&&cb.checked});
+  if(!selPT.length&&!selTax.length){alert('Zaznacz przynajmniej jeden typ lub taksonomię!');return}
 
-  const selPT  = postTypes.filter(t  => {
-    const cb = document.querySelector(`#pt-grid  input[value="${t.slug}"]`);
-    return cb && cb.checked;
-  });
-  const selTax = taxonomies.filter(t => {
-    const cb = document.querySelector(`#tax-grid input[value="${t.slug}"]`);
-    return cb && cb.checked;
-  });
+  // Which fields are selected
+  const wantId    =document.getElementById('f_id').checked;
+  const wantUrl   =true; // always
+  const wantSlug  =document.getElementById('f_slug').checked;
+  const wantType  =document.getElementById('f_type').checked;
+  const wantStatus=document.getElementById('f_status').checked;
+  const wantCount =document.getElementById('f_count').checked;
+  const wantTitle =document.getElementById('f_title').checked&&detectedPlugin!=='none';
+  const wantDesc  =document.getElementById('f_desc').checked&&detectedPlugin!=='none';
+  const wantH1    =document.getElementById('f_h1').checked;
 
-  if (selPT.length + selTax.length === 0) { alert('Zaznacz przynajmniej jeden typ lub taksonomię!'); return; }
-
-  allResults = [];
-  document.getElementById('results-body').innerHTML = '';
+  allResults=[];
+  document.getElementById('tbl-head').innerHTML='';
+  document.getElementById('tbl-body').innerHTML='';
   clearLog();
-  document.getElementById('stats').style.display = 'none';
-  document.getElementById('table-wrap').style.display = 'none';
-  document.getElementById('actions').style.display = 'none';
-  document.getElementById('btn-run').disabled = true;
-  document.getElementById('btn-detect').disabled = true;
-  showInfo('', false);
-  setProgress(2);
+  document.getElementById('stats').style.display='none';
+  document.getElementById('tbl-wrap').style.display='none';
+  document.getElementById('actions').style.display='none';
+  document.getElementById('btn-run').disabled=true;
+  document.getElementById('btn-detect').disabled=true;
+  hideInfo();
+  setProgress(2,'Trwa pobieranie danych z REST API...');
+  setStep(4);
 
-  const totalGroups = selPT.length + selTax.length;
-  let done = 0;
+  const totalGroups=selPT.length+selTax.length;
+  let doneGroups=0;
 
-  log(`🔍 Domena: ${domain}`, 'log-info');
-  log(`📋 Typy treści (${selPT.length}): ${selPT.map(t=>t.label).join(', ')}`, 'log-info');
-  log(`🏷️  Taksonomie (${selTax.length}): ${selTax.map(t=>t.label).join(', ')}`, 'log-info');
+  log(`🔍 Domena: ${domain}`,'linfo');
+  log(`🔌 Wtyczka SEO: ${pluginInfo(detectedPlugin).name}`,'linfo');
 
   // Reset badges
-  [...postTypes, ...taxonomies].forEach(t => {
-    const b = document.getElementById(`badge-pt-${t.slug}`) || document.getElementById(`badge-tax-${t.slug}`);
-    if (b) b.textContent = '–';
+  [...postTypes,...taxonomies].forEach(t=>{
+    ['pt','tax'].forEach(g=>{
+      const b=document.getElementById(`badge-${g}-${t.slug}`);
+      if(b)b.textContent='–';
+      document.getElementById(`cw-${g}-${t.slug}`)?.classList.remove('done');
+    });
   });
 
   // — Post types —
-  for (const t of selPT) {
-    log(`\n→ [TYP] ${t.label} (/${t.endpoint})`, 'log-info');
-    const items = await fetchPostTypePages(domain, t.endpoint);
-    log(`  Razem: ${items.length} wpisów`, items.length ? 'log-ok' : 'log-warn');
-
-    const b = document.getElementById(`badge-pt-${t.slug}`);
-    if (b) b.textContent = items.length;
-    if (items.length) document.getElementById(`chk-wrap-pt-${t.slug}`)?.classList.add('done');
-
-    allResults.push(...items.map(item => ({
-      id:        item.id,
-      category:  'Typ treści',
-      type:      t.endpoint,
-      typeLabel: t.label,
-      title:     cleanTitle(item.title?.rendered),
-      link:      item.link || '',
-      slug:      item.slug || '',
-      status:    item.status || '',
-      count:     '',
-      isTax:     false,
-    })));
-    done++;
-    setProgress(Math.round((done / totalGroups) * 100));
+  for(const t of selPT){
+    log(`\n→ [TYP] ${t.label} (/${t.endpoint})`,'linfo');
+    const items=await fetchPTPages(domain,t.endpoint,detectedPlugin,wantTitle||wantDesc);
+    log(`  Razem: ${items.length} wpisów`,items.length?'lok':'lwarn');
+    const b=document.getElementById(`badge-pt-${t.slug}`);
+    if(b)b.textContent=items.length;
+    if(items.length)document.getElementById(`cw-pt-${t.slug}`)?.classList.add('done');
+    const meta=detectedPlugin!=='none'?(wantTitle||wantDesc):false;
+    allResults.push(...items.map(item=>{
+      const m=meta?extractMeta(item,detectedPlugin):{title:'',desc:''};
+      return{id:item.id,category:'Typ treści',type:t.endpoint,typeLabel:t.label,
+        title:cleanText(item.title?.rendered),link:item.link||'',slug:item.slug||'',
+        status:item.status||'',count:'',metaTitle:m.title,metaDesc:m.desc,h1:'',isTax:false};
+    }));
+    doneGroups++;
+    setProgress(Math.round((doneGroups/totalGroups)*50),`Pobrano ${allResults.length} URL-i...`);
   }
 
   // — Taxonomies —
-  for (const t of selTax) {
-    log(`\n→ [TAKSONOMIA] ${t.label} (/${t.endpoint})`, 'log-info');
-    const items = await fetchTaxonomyPages(domain, t.endpoint);
-    log(`  Razem: ${items.length} kategorii/tagów`, items.length ? 'log-ok' : 'log-warn');
-
-    const b = document.getElementById(`badge-tax-${t.slug}`);
-    if (b) b.textContent = items.length;
-    if (items.length) document.getElementById(`chk-wrap-tax-${t.slug}`)?.classList.add('done');
-
-    allResults.push(...items.map(item => ({
-      id:        item.id,
-      category:  'Taksonomia',
-      type:      t.endpoint,
-      typeLabel: t.label,
-      title:     cleanTitle(item.name),
-      link:      item.link || '',
-      slug:      item.slug || '',
-      status:    'publish',
-      count:     item.count ?? '',
-      isTax:     true,
+  for(const t of selTax){
+    log(`\n→ [TAKSONOMIA] ${t.label} (/${t.endpoint})`,'linfo');
+    const items=await fetchTaxPages(domain,t.endpoint);
+    log(`  Razem: ${items.length} kategorii`,items.length?'lok':'lwarn');
+    const b=document.getElementById(`badge-tax-${t.slug}`);
+    if(b)b.textContent=items.length;
+    if(items.length)document.getElementById(`cw-tax-${t.slug}`)?.classList.add('done');
+    allResults.push(...items.map(item=>({
+      id:item.id,category:'Taksonomia',type:t.endpoint,typeLabel:t.label,
+      title:cleanText(item.name),link:item.link||'',slug:item.slug||'',
+      status:'publish',count:item.count??'',metaTitle:'',metaDesc:'',h1:'',isTax:true
     })));
-    done++;
-    setProgress(Math.round((done / totalGroups) * 100));
+    doneGroups++;
+    setProgress(Math.round((doneGroups/totalGroups)*50),`Pobrano ${allResults.length} URL-i...`);
   }
 
-  setProgress(100);
-  log(`\n✅ Gotowe! Zebrano łącznie ${allResults.length} URL-i.`, 'log-ok');
+  // Render table (without H1 yet)
+  buildTableHeader(wantId,wantSlug,wantType,wantStatus,wantCount,wantTitle,wantDesc,wantH1);
+  renderTableRows(wantId,wantSlug,wantType,wantStatus,wantCount,wantTitle,wantDesc,wantH1);
+  renderStats();
+  document.getElementById('tbl-wrap').style.display='block';
 
-  renderTable();
-  renderStats(selPT, selTax);
-  document.getElementById('btn-run').disabled = false;
-  document.getElementById('btn-detect').disabled = false;
-  showInfo(`✅ <strong>Zebrano ${allResults.length} URL-i</strong> — ${selPT.length} typów treści i ${selTax.length} taksonomii. Pobierz plik CSV poniżej.`, true);
-  setStep(4);
+  // — H1 fetching (slow) —
+  if(wantH1&&allResults.length>0){
+    log(`\n🌐 Pobieranie H1 dla ${allResults.length} URL-i przez proxy...`,'linfo');
+    log('  (To może chwilę potrwać — cierpliwości!)','linfo');
+    let h1Done=0;
+    const tasks=allResults.map((row,idx)=>async()=>{
+      row.h1=await fetchH1(row.link);
+      h1Done++;
+      // Update cell in table
+      const cell=document.getElementById(`h1-${idx}`);
+      if(cell){cell.textContent=row.h1;cell.classList.remove('loading-cell')}
+      setProgress(50+Math.round((h1Done/allResults.length)*50),`H1: ${h1Done}/${allResults.length} stron...`);
+    });
+    await runConcurrent(tasks,CONCURRENCY,(i,total)=>{
+      log(`  ✓ H1 pobrano dla ${i+1}/${total}: ${allResults[i].link}`,'lok');
+    });
+    log('\n✅ Pobieranie H1 zakończone.','lok');
+  }
+
+  setProgress(100,'✅ Gotowe!');
+  document.getElementById('actions').style.display='flex';
+  document.getElementById('btn-run').disabled=false;
+  document.getElementById('btn-detect').disabled=false;
+  showInfo(`✅ <strong>Zebrano ${allResults.length} URL-i</strong>${wantH1?' z H1':''} — gotowe do pobrania.`,'ok');
+  setStep(5);
 }
 
-function renderTable() {
-  const tbody = document.getElementById('results-body');
-  tbody.innerHTML = '';
-  allResults.forEach((row, i) => {
-    const tr = document.createElement('tr');
-    const pillClass = row.isTax ? 'pill-tax' : 'pill-post';
-    tr.innerHTML = `
-      <td style="color:var(--sempai-muted);font-size:11px">${i+1}</td>
-      <td><strong>${row.id}</strong></td>
-      <td style="font-size:11px;color:var(--sempai-muted)">${row.category}</td>
-      <td><span class="type-pill ${pillClass}">${row.type}</span></td>
-      <td>${row.title}</td>
-      <td><a href="${row.link}" target="_blank" style="color:var(--sempai-green)">${row.link}</a></td>
-      <td style="color:var(--sempai-muted)">${row.slug}</td>
-      <td style="color:var(--sempai-muted);text-align:center">${row.count !== '' ? row.count : '–'}</td>
-    `;
+// ─── Table rendering ──────────────────────────────────────────────────────────
+function buildTableHeader(wantId,wantSlug,wantType,wantStatus,wantCount,wantTitle,wantDesc,wantH1){
+  const head=document.getElementById('tbl-head');
+  head.innerHTML='';
+  const tr=document.createElement('tr');
+  const cols=['#'];
+  if(wantId)cols.push('ID');
+  cols.push('URL');
+  if(wantSlug)cols.push('Slug');
+  if(wantType)cols.push('Typ');
+  if(wantStatus)cols.push('Status');
+  if(wantCount)cols.push('Wpisów');
+  if(wantTitle)cols.push('Meta Title');
+  if(wantDesc)cols.push('Meta Description');
+  if(wantH1)cols.push('H1');
+  tr.innerHTML=cols.map(c=>`<th>${c}</th>`).join('');
+  head.appendChild(tr);
+}
+
+function renderTableRows(wantId,wantSlug,wantType,wantStatus,wantCount,wantTitle,wantDesc,wantH1){
+  const tbody=document.getElementById('tbl-body');
+  tbody.innerHTML='';
+  allResults.forEach((row,i)=>{
+    const tr=document.createElement('tr');
+    let html=`<td style="color:var(--muted);font-size:10px">${i+1}</td>`;
+    if(wantId)html+=`<td><strong>${row.id}</strong></td>`;
+    html+=`<td><a href="${row.link}" target="_blank" style="color:var(--green)">${row.link}</a></td>`;
+    if(wantSlug)html+=`<td style="color:var(--muted)">${row.slug}</td>`;
+    if(wantType)html+=`<td><span class="pill ${row.isTax?'pill-tax':'pill-pt'}">${row.type}</span></td>`;
+    if(wantStatus)html+=`<td style="color:var(--muted)">${row.status}</td>`;
+    if(wantCount)html+=`<td style="text-align:center;color:var(--muted)">${row.count!==''?row.count:'–'}</td>`;
+    if(wantTitle)html+=`<td>${row.metaTitle||'–'}</td>`;
+    if(wantDesc)html+=`<td style="color:var(--muted)">${row.metaDesc||'–'}</td>`;
+    if(wantH1)html+=`<td id="h1-${i}" class="loading-cell">⏳ ładowanie...</td>`;
+    tr.innerHTML=html;
     tbody.appendChild(tr);
   });
-  document.getElementById('table-wrap').style.display = 'block';
-  document.getElementById('actions').style.display = 'flex';
 }
 
-function renderStats(selPT, selTax) {
-  const container = document.getElementById('stats');
-  container.innerHTML = '';
-  const add = (num, lbl) => {
-    const c = document.createElement('div');
-    c.className = 'stat-card';
-    c.innerHTML = `<div class="num">${num}</div><div class="lbl">${lbl}</div>`;
-    container.appendChild(c);
+function renderStats(){
+  const c=document.getElementById('stats');
+  c.innerHTML='';
+  const add=(n,l)=>{const d=document.createElement('div');d.className='stat';d.innerHTML=`<div class="n">${n}</div><div class="l">${l}</div>`;c.appendChild(d)};
+  add(allResults.length,'Wszystkich URL');
+  add(allResults.filter(r=>!r.isTax).length,'Wpisy / Strony');
+  add(allResults.filter(r=>r.isTax).length,'Kategorie / Tagi');
+  c.style.display='flex';
+}
+
+// ─── CSV export ───────────────────────────────────────────────────────────────
+function getSelectedFields(){
+  return{
+    wantId:    document.getElementById('f_id').checked,
+    wantSlug:  document.getElementById('f_slug').checked,
+    wantType:  document.getElementById('f_type').checked,
+    wantStatus:document.getElementById('f_status').checked,
+    wantCount: document.getElementById('f_count').checked,
+    wantTitle: document.getElementById('f_title').checked&&detectedPlugin!=='none',
+    wantDesc:  document.getElementById('f_desc').checked&&detectedPlugin!=='none',
+    wantH1:    document.getElementById('f_h1').checked,
   };
-  add(allResults.length, 'Wszystkich URL');
-  add(allResults.filter(r=>!r.isTax).length, 'Wpisy / Strony');
-  add(allResults.filter(r=>r.isTax).length,  'Kategorie / Tagi');
-  container.style.display = 'flex';
 }
+function q(v){return`"${String(v).replace(/"/g,'""')}"` }
+function buildCSV(){
+  const f=getSelectedFields();
+  const headers=['URL'];
+  if(f.wantId)headers.unshift('ID');
+  if(f.wantSlug)headers.push('Slug');
+  if(f.wantType){headers.push('Typ (endpoint)');headers.push('Typ (nazwa)');}
+  if(f.wantStatus)headers.push('Status');
+  if(f.wantCount)headers.push('Liczba wpisów');
+  if(f.wantTitle)headers.push('Meta Title');
+  if(f.wantDesc)headers.push('Meta Description');
+  if(f.wantH1)headers.push('H1');
 
-function buildCSV() {
-  const header = ['ID','Kategoria','Typ (endpoint)','Typ (nazwa)','Tytuł / Nazwa','Obecny URL','Slug','Status','Liczba wpisów'];
-  const rows = allResults.map(r => [
-    r.id, r.category, r.type, r.typeLabel,
-    `"${r.title.replace(/"/g,'""')}"`,
-    r.link, r.slug, r.status, r.count
-  ].join(','));
-  return [header.join(','), ...rows].join('\n');
+  const rows=allResults.map(r=>{
+    const cols=[q(r.link)];
+    if(f.wantId)cols.unshift(r.id);
+    if(f.wantSlug)cols.push(q(r.slug));
+    if(f.wantType){cols.push(q(r.type));cols.push(q(r.typeLabel));}
+    if(f.wantStatus)cols.push(q(r.status));
+    if(f.wantCount)cols.push(r.count);
+    if(f.wantTitle)cols.push(q(r.metaTitle));
+    if(f.wantDesc)cols.push(q(r.metaDesc));
+    if(f.wantH1)cols.push(q(r.h1));
+    return cols.join(',');
+  });
+  return[headers.join(','),...rows].join('\n');
 }
-
-function getFilename() {
-  const d = document.getElementById('domain').value.trim()
-    .replace(/https?:\/\//,'').replace(/\//g,'').replace(/\./g,'_');
-  return `${d}_url_structure.csv`;
+function getFilename(){
+  const d=document.getElementById('domain').value.trim().replace(/https?:\/\//,'').replace(/\//g,'').replace(/\./g,'_');
+  return`${d}_seo_audit.csv`;
 }
-
-function downloadCSV() {
-  const csv = '\uFEFF' + buildCSV();
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = getFilename();
+function downloadCSV(){
+  const csv='\uFEFF'+buildCSV();
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=getFilename();
   a.click();
 }
-
-function copyCSV() {
+function copyCSV(){
   navigator.clipboard.writeText(buildCSV())
-    .then(() => alert('✅ CSV skopiowany do schowka!'))
-    .catch(() => alert('Nie udało się skopiować — użyj przycisku Pobierz CSV.'));
+    .then(()=>alert('✅ CSV skopiowany do schowka!'))
+    .catch(()=>alert('Nie udało się — użyj przycisku Pobierz CSV.'));
 }
 </script>
 </body>
