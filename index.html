@@ -115,6 +115,34 @@ tbody td{padding:6px 10px;border-bottom:1px solid var(--border);word-break:break
 .toolbar span{font-size:13px;color:var(--muted);margin-right:auto}
 #actions{display:none;gap:10px;flex-wrap:wrap;margin-top:4px}
 .note{font-size:12px;color:var(--muted);margin-top:8px}
+
+/* Delay selector */
+.delay-row{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
+.delay-row label{font-size:13px;color:var(--muted)}
+.delay-row select{border:1px solid var(--border);border-radius:4px;padding:6px 10px;font-family:var(--font);font-size:13px;color:var(--dark);outline:none;cursor:pointer}
+.delay-row select:focus{border-color:var(--green)}
+
+/* Crawl controls */
+#crawl-controls{display:none;gap:8px;margin-bottom:12px;align-items:center;flex-wrap:wrap}
+.btn-pause{background:#e67e22;color:#fff;border:none;border-radius:4px;padding:8px 18px;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:background .15s}
+.btn-pause:hover{background:#d35400}
+.btn-pause.resuming{background:var(--green)}
+.btn-pause.resuming:hover{background:var(--green2)}
+#pause-status{font-size:12px;color:var(--muted)}
+
+/* Error panel */
+#error-panel{display:none;border:1px solid #f5b8b8;border-radius:6px;background:#fff5f5;padding:16px;margin-bottom:14px}
+#error-panel h3{font-size:13px;font-weight:700;color:#c0392b;margin-bottom:10px}
+#error-list{max-height:180px;overflow-y:auto;margin-bottom:10px}
+.error-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #fdd;font-size:12px}
+.error-row:last-child{border-bottom:none}
+.error-row input{accent-color:var(--green);cursor:pointer;flex-shrink:0}
+.error-row a{color:var(--green);word-break:break-all}
+.error-row .err-code{color:#c0392b;font-weight:700;margin-left:auto;white-space:nowrap;padding-left:8px}
+#retry-btn{background:var(--green);color:#fff;border:none;border-radius:4px;padding:8px 18px;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer}
+#retry-btn:hover{background:var(--green2)}
+#error-panel .ep-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+#error-panel .ep-sel{font-size:12px;color:var(--muted);cursor:pointer;text-decoration:underline;background:none;border:none;font-family:var(--font)}
 </style>
 </head>
 <body>
@@ -171,6 +199,16 @@ tbody td{padding:6px 10px;border-bottom:1px solid var(--border);word-break:break
     <div class="slabel">Wybierz pola które chcesz wyciągnąć</div>
     <div class="fields-grid" id="fields-grid"></div>
     <p class="note" id="slow-note" style="display:none">⚠️ Pola oznaczone <span style="background:#fff3cd;color:#856404;border-radius:8px;font-size:10px;font-weight:700;padding:1px 6px">WOLNE</span> wymagają osobnego requestu HTTP dla każdego URL-a — znacznie wydłuża to czas działania przy dużych serwisach.</p>
+    <div class="delay-row" id="delay-row" style="display:none">
+      <label for="delay-select">⏱ Przerwa między H1 requestami:</label>
+      <select id="delay-select">
+        <option value="0">Brak (0s)</option>
+        <option value="5000" selected>5 sekund</option>
+        <option value="10000">10 sekund</option>
+        <option value="30000">30 sekund</option>
+        <option value="60000">1 minuta</option>
+      </select>
+    </div>
 
     <div class="div"></div>
     <button class="btn" id="btn-run" onclick="startScraping()">▶ Zbierz dane</button>
@@ -179,8 +217,26 @@ tbody td{padding:6px 10px;border-bottom:1px solid var(--border);word-break:break
   <!-- Progress -->
   <div id="prog-wrap"><div id="prog-bar"></div></div>
   <div id="prog-label"></div>
+
+  <!-- Crawl controls (pause/resume) -->
+  <div id="crawl-controls">
+    <button class="btn-pause" id="btn-pause" onclick="togglePause()">⏸ Zatrzymaj crawl</button>
+    <span id="pause-status"></span>
+  </div>
+
   <div id="log"></div>
   <div id="stats"></div>
+
+  <!-- Error panel -->
+  <div id="error-panel">
+    <h3>⚠️ URL-e z błędami — kliknij "Ponów" aby spróbować ponownie</h3>
+    <div id="error-list"></div>
+    <div class="ep-toolbar">
+      <button id="retry-btn" onclick="retryErrors()">🔄 Ponów zaznaczone</button>
+      <button class="ep-sel" onclick="selectAllErrors(true)">Zaznacz wszystkie</button>
+      <button class="ep-sel" onclick="selectAllErrors(false)">Odznacz wszystkie</button>
+    </div>
+  </div>
   <div id="tbl-wrap"><table><thead id="tbl-head"></thead><tbody id="tbl-body"></tbody></table></div>
   <div id="actions">
     <button class="btn" onclick="downloadCSV()">⬇ Pobierz CSV</button>
@@ -194,7 +250,7 @@ tbody td{padding:6px 10px;border-bottom:1px solid var(--border);word-break:break
 // ─── Constants ────────────────────────────────────────────────────────────────
 const SYS_PT  = new Set(['attachment','nav_menu_item','wp_block','wp_template','wp_template_part','wp_navigation','revision','customize_changeset','custom_css','oembed_cache','user_request','wp_global_styles']);
 const SYS_TAX = new Set(['nav_menu','link_category','post_format']);
-const CONCURRENCY = 3; // parallel H1 requests (lower = nicer to proxies)
+const CONCURRENCY = 1; // sequential H1 requests — gentler on target server
 
 // Proxy chain — tried in order until one works
 const PROXIES = [
@@ -238,6 +294,14 @@ let postTypes  = [];
 let taxonomies = [];
 let allResults = [];
 let detectedPlugin = 'none';
+
+// H1 crawl state
+let crawlPaused    = false;
+let crawlStopped   = false;
+let pauseResolvers = []; // promises waiting for resume
+let errorUrls      = []; // {idx, url, reason}
+let consecutiveErrors = 0;
+const AUTO_PAUSE_THRESHOLD = 3;
 
 // ─── UI helpers ───────────────────────────────────────────────────────────────
 function setStep(n){
@@ -295,11 +359,16 @@ function buildFieldsGrid(){
     // Show slow note if any slow field exists
     if(f.slow) document.getElementById('slow-note').style.display='block';
   });
-  // When h1 toggled, show/hide slow note
+  // When h1 toggled, show/hide slow note + delay selector
   document.getElementById('f_h1').addEventListener('change',()=>{
     const anySlowChecked=[...document.querySelectorAll('.slow-field input:checked')].length>0;
     document.getElementById('slow-note').style.display=anySlowChecked?'block':'none';
+    document.getElementById('delay-row').style.display=anySlowChecked?'flex':'none';
   });
+  // Show delay row initially if h1 is checked by default
+  if(document.getElementById('f_h1').checked){
+    document.getElementById('delay-row').style.display='flex';
+  }
 }
 
 // ─── Checkbox helpers ─────────────────────────────────────────────────────────
@@ -452,38 +521,78 @@ function extractMeta(item,plugin){
 }
 
 // ─── H1 fetching ──────────────────────────────────────────────────────────────
-async function fetchH1(url){
-  for(const proxy of PROXIES){
-    try{
-      const controller=new AbortController();
-      const timer=setTimeout(()=>controller.abort(),10000);
-      const r=await fetch(proxy.build(url),{signal:controller.signal});
-      clearTimeout(timer);
-      if(!r.ok) continue;
-      const html=await proxy.extract(r);
-      if(!html) continue;
-      const m=html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
-      if(!m) return '(brak H1)';
-      return cleanText(m[1]);
-    }catch(e){
-      continue;
-    }
+
+function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
+// Wait until unpaused (called after each H1 request if paused)
+async function waitIfPaused(){
+  while(crawlPaused){
+    await new Promise(r=>pauseResolvers.push(r));
   }
-  return '(proxy niedostępne)';
 }
 
-async function runConcurrent(tasks,concurrency,onDone){
-  let i=0;
-  async function worker(){
-    while(i<tasks.length){
-      const idx=i++;
-      await tasks[idx]();
-      onDone(idx,tasks.length);
+// Fetch H1 with up to 2 retries + backoff on 5xx
+async function fetchH1(url){
+  const RETRIES = 2;
+  const BACKOFF  = [5000, 10000]; // ms between retries
+
+  for(let attempt=0; attempt<=RETRIES; attempt++){
+    if(attempt>0){
+      const wait=BACKOFF[attempt-1];
+      log(`  ↩ Retry ${attempt}/${RETRIES} za ${wait/1000}s: ${url}`,'lwarn');
+      await sleep(wait);
+      await waitIfPaused();
+    }
+
+    for(const proxy of PROXIES){
+      try{
+        const controller=new AbortController();
+        const timer=setTimeout(()=>controller.abort(),10000);
+        const r=await fetch(proxy.build(url),{signal:controller.signal});
+        clearTimeout(timer);
+
+        // 5xx = server-side block/error — worth retrying
+        if(r.status>=500){
+          throw Object.assign(new Error(`HTTP ${r.status}`),{is5xx:true, status:r.status});
+        }
+        if(!r.ok) continue; // 4xx — skip proxy, try next
+
+        const html=await proxy.extract(r);
+        if(!html) continue;
+        const m=html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
+        return { h1: m ? cleanText(m[1]) : '(brak H1)', error: null };
+      }catch(e){
+        if(e.is5xx){
+          // Bubble up 5xx to trigger retry logic
+          if(attempt<RETRIES) throw e;
+          return { h1:`(błąd ${e.status})`, error: e.status };
+        }
+        continue; // network / abort — try next proxy
+      }
     }
   }
-  const workers=[];
-  for(let w=0;w<Math.min(concurrency,tasks.length);w++) workers.push(worker());
-  await Promise.all(workers);
+  return { h1:'(proxy niedostępne)', error:'proxy' };
+}
+
+// Sequential runner with delay, pause support and auto-pause on consecutive errors
+async function runSequential(tasks, delayMs, onDone){
+  for(let i=0; i<tasks.length; i++){
+    if(crawlStopped) break;
+    await waitIfPaused();
+    await tasks[i]();
+    onDone(i, tasks.length);
+    if(i < tasks.length-1 && delayMs>0){
+      // Show countdown in pause-status
+      const ps=document.getElementById('pause-status');
+      for(let t=delayMs;t>0;t-=1000){
+        if(crawlPaused||crawlStopped) break;
+        ps.textContent=`⏱ Następny request za ${Math.ceil(t/1000)}s...`;
+        await sleep(Math.min(1000,t));
+      }
+      ps.textContent='';
+    }
+    await waitIfPaused();
+  }
 }
 
 // ─── Fetch post type pages ────────────────────────────────────────────────────
@@ -536,6 +645,100 @@ async function fetchTaxPages(base,endpoint){
   return items;
 }
 
+// ─── Pause / Resume controls ──────────────────────────────────────────────────
+function showCrawlControls(){
+  const c=document.getElementById('crawl-controls');
+  c.style.display='flex';
+  const btn=document.getElementById('btn-pause');
+  btn.textContent='⏸ Zatrzymaj crawl';
+  btn.className='btn-pause';
+  document.getElementById('pause-status').textContent='';
+}
+function hideCrawlControls(){
+  document.getElementById('crawl-controls').style.display='none';
+  document.getElementById('pause-status').textContent='';
+}
+function togglePause(){
+  const btn=document.getElementById('btn-pause');
+  const ps=document.getElementById('pause-status');
+  if(!crawlPaused){
+    crawlPaused=true;
+    btn.textContent='▶ Wznów crawl';
+    btn.className='btn-pause resuming';
+    ps.textContent='⏸ Crawl wstrzymany — kliknij Wznów aby kontynuować.';
+  } else {
+    crawlPaused=false;
+    consecutiveErrors=0; // reset counter on manual resume
+    btn.textContent='⏸ Zatrzymaj crawl';
+    btn.className='btn-pause';
+    ps.textContent='';
+    // release all waiting promises
+    const rs=pauseResolvers.splice(0);
+    rs.forEach(r=>r());
+  }
+}
+function autoPause(reason){
+  if(crawlPaused) return; // already paused
+  crawlPaused=true;
+  const btn=document.getElementById('btn-pause');
+  const ps=document.getElementById('pause-status');
+  btn.textContent='▶ Wznów crawl';
+  btn.className='btn-pause resuming';
+  ps.textContent=`🚨 Auto-pauza: ${reason}. Kliknij Wznów gdy serwer będzie gotowy.`;
+  log(`\n🚨 AUTO-PAUZA: ${reason}`,'lerr');
+}
+
+// ─── Error panel helpers ───────────────────────────────────────────────────────
+function addErrorUrl(idx, url, reason){
+  errorUrls.push({idx, url, reason});
+  const list=document.getElementById('error-list');
+  const row=document.createElement('div');
+  row.className='error-row';
+  row.id=`err-row-${idx}`;
+  row.innerHTML=`<input type="checkbox" checked data-idx="${idx}">
+    <a href="${url}" target="_blank">${url}</a>
+    <span class="err-code">${reason}</span>`;
+  list.appendChild(row);
+  document.getElementById('error-panel').style.display='block';
+}
+function selectAllErrors(state){
+  document.querySelectorAll('#error-list input[type=checkbox]').forEach(cb=>cb.checked=state);
+}
+async function retryErrors(){
+  const checked=[...document.querySelectorAll('#error-list input[type=checkbox]:checked')].map(cb=>parseInt(cb.dataset.idx));
+  if(!checked.length){alert('Zaznacz przynajmniej jeden URL.');return;}
+  const delayMs=parseInt(document.getElementById('delay-select').value)||0;
+  document.getElementById('retry-btn').disabled=true;
+  crawlPaused=false; crawlStopped=false; consecutiveErrors=0;
+  showCrawlControls();
+  let done=0;
+  for(const idx of checked){
+    await waitIfPaused();
+    const row=allResults[idx];
+    const cell=document.getElementById(`h1-${idx}`);
+    if(cell){cell.textContent='⏳ ponawiam...';cell.className='loading-cell';}
+    let result;
+    try{ result=await fetchH1(row.link); }
+    catch(e){ result={h1:`(błąd ${e.status||'?'})`, error:e.status||'retry'}; }
+    row.h1=result.h1;
+    if(cell){cell.textContent=row.h1;cell.classList.remove('loading-cell');}
+    if(result.error){
+      log(`  ✗ Błąd ponowienia: ${row.link} — ${result.error}`,'lerr');
+    } else {
+      // remove from error list
+      const errRow=document.getElementById(`err-row-${idx}`);
+      if(errRow) errRow.remove();
+      errorUrls=errorUrls.filter(e=>e.idx!==idx);
+      log(`  ✓ Ponowiono: ${row.link} → ${row.h1}`,'lok');
+    }
+    done++;
+    if(done<checked.length && delayMs>0) await sleep(delayMs);
+  }
+  hideCrawlControls();
+  if(!errorUrls.length) document.getElementById('error-panel').style.display='none';
+  document.getElementById('retry-btn').disabled=false;
+}
+
 // ─── STEP 4: Scrape ───────────────────────────────────────────────────────────
 async function startScraping(){
   const domain=document.getElementById('domain').value.trim().replace(/\/$/,'');
@@ -556,8 +759,12 @@ async function startScraping(){
   const wantH1    =document.getElementById('f_h1').checked;
 
   allResults=[];
+  errorUrls=[];
+  crawlPaused=false; crawlStopped=false; consecutiveErrors=0; pauseResolvers=[];
   document.getElementById('tbl-head').innerHTML='';
   document.getElementById('tbl-body').innerHTML='';
+  document.getElementById('error-panel').style.display='none';
+  document.getElementById('error-list').innerHTML='';
   clearLog();
   document.getElementById('stats').style.display='none';
   document.getElementById('tbl-wrap').style.display='none';
@@ -625,23 +832,46 @@ async function startScraping(){
   renderStats();
   document.getElementById('tbl-wrap').style.display='block';
 
-  // — H1 fetching (slow) —
+  // — H1 fetching (slow, sequential) —
   if(wantH1&&allResults.length>0){
-    log(`\n🌐 Pobieranie H1 dla ${allResults.length} URL-i przez proxy...`,'linfo');
+    const delayMs=parseInt(document.getElementById('delay-select').value)||0;
+    errorUrls=[];
+    document.getElementById('error-panel').style.display='none';
+    document.getElementById('error-list').innerHTML='';
+    crawlPaused=false; crawlStopped=false; consecutiveErrors=0;
+    showCrawlControls();
+    log(`\n🌐 Pobieranie H1 dla ${allResults.length} URL-i (sekwencyjnie, przerwa: ${delayMs/1000}s)...`,'linfo');
     log('  (To może chwilę potrwać — cierpliwości!)','linfo');
     let h1Done=0;
     const tasks=allResults.map((row,idx)=>async()=>{
-      row.h1=await fetchH1(row.link);
+      let result;
+      try{
+        result=await fetchH1(row.link);
+      }catch(e){
+        result={h1:`(błąd ${e.status||'?'})`, error:e.status||'unknown'};
+      }
+      row.h1=result.h1;
       h1Done++;
-      // Update cell in table
       const cell=document.getElementById(`h1-${idx}`);
-      if(cell){cell.textContent=row.h1;cell.classList.remove('loading-cell')}
+      if(cell){cell.textContent=row.h1;cell.classList.remove('loading-cell');}
+
+      if(result.error){
+        consecutiveErrors++;
+        addErrorUrl(idx, row.link, result.error);
+        log(`  ✗ Błąd H1 [${consecutiveErrors} z rzędu]: ${row.link} — ${result.error}`,'lerr');
+        if(consecutiveErrors>=AUTO_PAUSE_THRESHOLD){
+          autoPause(`${AUTO_PAUSE_THRESHOLD} błędy z rzędu (${result.error})`);
+          consecutiveErrors=0;
+        }
+      } else {
+        consecutiveErrors=0;
+        log(`  ✓ H1: ${row.link} → ${row.h1}`,'lok');
+      }
       setProgress(50+Math.round((h1Done/allResults.length)*50),`H1: ${h1Done}/${allResults.length} stron...`);
     });
-    await runConcurrent(tasks,CONCURRENCY,(i,total)=>{
-      log(`  ✓ H1 pobrano dla ${i+1}/${total}: ${allResults[i].link}`,'lok');
-    });
+    await runSequential(tasks, delayMs, ()=>{});
     log('\n✅ Pobieranie H1 zakończone.','lok');
+    hideCrawlControls();
   }
 
   setProgress(100,'✅ Gotowe!');
